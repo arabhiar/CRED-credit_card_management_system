@@ -8,5 +8,9 @@ module.exports = {
     getAllCards: async(req, res, next) => {
         cardService.getAllCards(req, res)
             .catch(err => res.send(err));
+    },
+    payBill: async(req, res, next) => {
+        cardService.payBill(req, res)
+            .catch(err => res.send(err));
     }
 }
