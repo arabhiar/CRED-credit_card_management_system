@@ -1,6 +1,7 @@
 const db = require('../models');
 const encryptDecrypt = require('./encryptDecrypt');
 const calculateOutstandingAmount = require('./calculateOutstandingAmount');
+const { Op } = require('sequelize')
 
 
 
@@ -42,26 +43,31 @@ module.exports = {
     },
     getAllCards: async(req, res) => {
         try {
-            const hashedData = await db.Card.findAll({
+            const userCards = await db.Card.findAll({
                 where: {
                     UserId: req.user.id
                 },
                 include: [db.User]
             })
 
-            const originalData = hashedData.map(function(curr) {
-                let originalCardNumber = encryptDecrypt.decrypt(curr.cardNumber)
+            let data = [];
+
+            for(const card of userCards) {
+                let outstandingAmount = await calculateOutstandingAmount(req.user.id, card.id);
+                
+                let originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber)
                 let cardInfo = {
-                    cardOwnerName: curr.cardOwnerName,
+                    cardOwnerName: card.cardOwnerName,
                     cardNumber: originalCardNumber,
-                    expiryMonth: curr.expiryMonth,
-                    expiryYear: curr.expiryYear,
-                    // outstandingAmount: 
-                    User: curr.User
+                    expiryMonth: card.expiryMonth,
+                    expiryYear: card.expiryYear,
+                    outstandingAmount: outstandingAmount,
+                    User: card.User
                 }
-                return cardInfo;
-            })
-            res.send(originalData);
+
+                data.push(cardInfo);
+            }
+            res.send(data);
         }
         catch(err) {
             res.send({ message: err });
@@ -72,7 +78,6 @@ module.exports = {
 
         // firstly we've to find the hashedCardNumber and then make a transaction corresponding to that.
 
-        
         try {
             const userCards = await db.Card.findAll({
                 where: {
@@ -105,5 +110,97 @@ module.exports = {
         } catch (err) {
             res.send(err);
         }
+    },
+
+    getAllstatements: async(req, res) => {
+        try {
+            // cardNumber, year, month
+            let month = req.params.month;
+            let year = req.params.year;
+            
+            const endingDate = new Date(year, month);
+
+            month = parseInt(month) - 1;
+
+            const startingDate = new Date(year, month, 2);
+
+            // get hashedCardNumber first
+            const userCards = await db.Card.findAll({
+                where: {
+                    UserId: req.user.id
+                }
+            });
+
+            let cardId = '';
+            
+            for(const card of userCards) {
+                const originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
+                if(originalCardNumber === req.params.id) {
+                    cardId = card.id;
+                    break;
+                }
+            }
+
+            const statements = await db.Transaction.findAll({
+                where: {
+                    UserId: req.user.id,
+                    CardId: cardId,
+                    transactionDateTime: {
+                        [Op.gte]: startingDate,
+                        [Op.lte]: endingDate,
+                    }
+                }
+            })
+            res.send(statements);
+        } catch (err) {
+            res.send({ "err": err});
+        }
+    },
+    postStatement: async(req, res) => {
+        try {
+            // cardNumber, year, month
+            let month = req.params.month;
+            let year = req.params.year;
+
+            month = parseInt(month) - 1;
+
+            // 0 indexing month and day
+
+            const startingDate = new Date(year, month, 2);
+
+            // get hashedCardNumber first
+            const userCards = await db.Card.findAll({
+                where: {
+                    UserId: req.user.id
+                }
+            });
+
+            let cardId = '';
+            let hashedCardNumber = '';
+            
+            for(const card of userCards) {
+                const originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
+                if(originalCardNumber === req.params.id) {
+                    cardId = card.id;
+                    hashedCardNumber = card.cardNumber;
+                    break;
+                }
+            }
+
+            const statements = await db.Transaction.create({
+                amount: req.body.amount,
+                vendor: req.body.vendor,
+                credDeb: req.body.credDeb,
+                category: req.body.category,
+                cardNumber: hashedCardNumber,
+                transactionDateTime: startingDate,
+                UserId: req.user.id,
+                CardId: cardId,
+            })
+            res.send(statements);
+        } catch (err) {
+            res.send({ "err": err});
+        }
+
     }
 }
