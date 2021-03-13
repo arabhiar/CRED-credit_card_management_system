@@ -5,6 +5,7 @@ const luhnValidation = require('../middlewares/luhnValidation');
 const cardSchema = require('../schemas/cardSchema');
 const billSchema = require('../schemas/billSchema');
 const cardController = require('../controllers/card');
+const statementSchema = require('../schemas/statementSchema');
 
 
 router.post('/cards', [verifyToken(), cardSchema, luhnValidation], cardController.addCard); // firstly verifying if user is loggedIn or not, then verifying CardNumber using Luhn Validation
@@ -13,6 +14,8 @@ router.get('/cards', [verifyToken()], cardController.getAllCards); // firstly ch
 
 router.post('/cards/:id/pay', [verifyToken(), billSchema, luhnValidation], cardController.payBill); 
 
-// router.post('/cards/:id/statements/:year/:month', [verifyToken()])
+router.get('/cards/:id/statements/:year/:month', [verifyToken(), luhnValidation], cardController.getAllStatements);
+
+router.post('/cards/:id/statements/:year/:month', [verifyToken(), luhnValidation, statementSchema], cardController.postStatement);
 
 module.exports = router;

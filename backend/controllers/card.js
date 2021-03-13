@@ -12,5 +12,13 @@ module.exports = {
     payBill: async(req, res, next) => {
         cardService.payBill(req, res)
             .catch(err => res.send(err));
+    },
+    getAllStatements: async(req, res, next) => {
+        cardService.getAllstatements(req, res)
+            .catch(err => res.send(err));
+    },
+    postStatement: async(req, res, next) => {
+        cardService.postStatement(req, res)
+            .catch(err => res.send(err));
     }
 }
