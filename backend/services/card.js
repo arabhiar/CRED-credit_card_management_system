@@ -66,5 +66,44 @@ module.exports = {
         catch(err) {
             res.send({ message: err });
         }
+    },
+    payBill: async(req, res) => {
+        // I've userId, cardNumber and amount, I've to make a transaction (credit) for this particular card.
+
+        // firstly we've to find the hashedCardNumber and then make a transaction corresponding to that.
+
+        
+        try {
+            const userCards = await db.Card.findAll({
+                where: {
+                    UserId: req.user.id
+                }
+            });
+            let hashedCardNumber = '';
+            let cardId = '';
+            
+            for(const card of userCards) {
+                const originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
+                if(originalCardNumber === req.params.id) {
+                    hashedCardNumber = card.cardNumber;
+                    cardId = card.id;
+                }
+            }
+            
+            const currentTransaction = await db.Transaction.create({
+               amount: req.body.amount,
+               vendor: 'NA',
+               credDeb: true,
+               category: 'NA',
+               cardNumber: hashedCardNumber,
+               transactionDateTime: Date.now(),
+               CardId: cardId,
+               UserId: req.user.id,
+            });
+
+            res.send({ message: "paid"})
+        } catch (err) {
+            res.send(err);
+        }
     }
 }

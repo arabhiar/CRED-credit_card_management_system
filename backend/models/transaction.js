@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
+    const TIMESTAMP = require('sequelize-mysql-timestamp')(sequelize, { warnings: false });
     const Transaction = sequelize.define('Transaction', {
         transactionId: {
             allowNull: false,
@@ -29,25 +30,21 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: DataTypes.STRING,
         },
-        transactionMonth: {
+        transactionDateTime: {
             allowNull: false,
-            type: DataTypes.INTEGER,
-        },
-        transactionYear: {
-            allowNull: false,
-            type: DataTypes.INTEGER
+            type: TIMESTAMP
         }
     })
 
     Transaction.associate = (models) => {
         Transaction.belongsTo(models.User, {
             foreignKey: {
-                allowNull: false
+                allowNull: false,
             },
         })
         Transaction.belongsTo(models.Card, {
             foreignKey: {
-                allowNull: false
+                allowNull: false,
             }
         })
     }

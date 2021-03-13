@@ -2,6 +2,12 @@
 
 module.exports = (sequelize, DataTypes) => {
     const Card = sequelize.define('Card', {
+        id: {
+            allowNull: false,
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey: true
+        },
         cardOwnerName: {
             type: DataTypes.STRING,
             allowNull: false
@@ -9,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         cardNumber: {
             allowNull: false,
             type: DataTypes.STRING,
-            primaryKey: true,
+            unique: true,
         },
         outstandingAmount: {
             allowNull: false,
