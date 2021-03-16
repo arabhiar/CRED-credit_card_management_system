@@ -1,12 +1,14 @@
 const db = require('../models');
 const encryptDecrypt = require('./encryptDecrypt');
 const calculateOutstandingAmount = require('./calculateOutstandingAmount');
-const { Op } = require('sequelize')
+const { Op } = require('sequelize');
 
 
 
 module.exports = {
-    addCard: async(req, res) => { 
+    addCard: async(req, res, next) => { 
+        let errorName = 'Internal Server Error!';
+        res.statusCode = 500;
         try {
             const hashedCardNumber = await encryptDecrypt.encrypt(req.body.cardNumber);
             const userCards = await db.Card.findAll({
@@ -23,7 +25,9 @@ module.exports = {
                 }
             }
             if(cardExist === true) {
-                res.send({ message: "Card is already added!"});
+                res.statusCode = 200;
+                errorName = `Card is already added!`;
+                throw new Error();
             }
             else {
                 const newCard = await db.Card.create({
@@ -32,22 +36,29 @@ module.exports = {
                     expiryMonth: req.body.expiryMonth,
                     expiryYear: req.body.expiryYear,
                     UserId: req.user.id
-                });
+                }).catch(() => {
+                    throw new Error();
+                }) 
                 res.send(newCard);
             }
         }
         catch(err) {
-            res.send({ message: err });
+            throw new Error(errorName);
         }
         
     },
     getAllCards: async(req, res) => {
+        let errorName = 'Internal Server Error';
+        let statusCode = 500;
         try {
             const userCards = await db.Card.findAll({
                 where: {
                     UserId: req.user.id
                 },
                 include: [db.User]
+            }).catch(() => {
+                res.statusCode = statusCode;
+                throw new Error();
             })
 
             let data = [];
@@ -70,20 +81,24 @@ module.exports = {
             res.send(data);
         }
         catch(err) {
-            res.send({ message: err });
+            throw new Error(errorName);
         }
     },
     payBill: async(req, res) => {
         // I've userId, cardNumber and amount, I've to make a transaction (credit) for this particular card.
 
         // firstly we've to find the hashedCardNumber and then make a transaction corresponding to that.
-
+        let errorName = 'Internal Server Error';
+        let statusCode = 500;
         try {
             const userCards = await db.Card.findAll({
                 where: {
                     UserId: req.user.id
                 }
-            });
+            }).catch(() => {
+                res.statusCode = statusCode;
+                throw new Error();
+            })
             let hashedCardNumber = '';
             let cardId = '';
             
@@ -108,7 +123,7 @@ module.exports = {
 
             res.send({ message: "paid"})
         } catch (err) {
-            res.send(err);
+            throw new Error(errorName);
         }
     },
 

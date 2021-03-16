@@ -19,7 +19,7 @@ module.exports = {
         const user = await db.User.scope('withPassword').findOne({ where: { email } });
         // console.log(password, user.password);
         if(!user || !(await bcrypt.compare(password, user.password)))
-            throw 'email or password is incorrect';
+            throw new Error('email or password is incorrect');
         
         // authentication succesful
         const token = jwt.sign({ sub: user.id }, process.env.SECRET, { expiresIn: '7d' });
@@ -27,10 +27,9 @@ module.exports = {
     },
     
     signup: async(params) => {
-        console.log(params);
         // validate
         if(await db.User.findOne({ where: { email: params.email } })) {
-            throw `email ${params.username} is already registered!`;
+            throw new Error(`email "${params.email}" is already registered!`);
         }
 
         // hash password
