@@ -12,7 +12,7 @@ router.post('/cards', [verifyToken(), cardSchema, luhnValidation], cardControlle
 
 router.get('/cards', [verifyToken()], cardController.getAllCards); // firstly checking if user is logged in or not, then searching the cards related to particular id
 
-router.post('/cards/:id/pay', [verifyToken(), billSchema, luhnValidation], cardController.payBill); 
+router.post('/cards/:id/pay', [ verifyToken(), billSchema, luhnValidation ], cardController.payBill); 
 
 router.get('/cards/:id/statements/:year/:month', [verifyToken(), luhnValidation], cardController.getAllStatements);
 
