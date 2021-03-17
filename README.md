@@ -13,7 +13,8 @@ Team ID: CRED-T8 | Team Members: Narendra Manglani &amp; Abhishek Ranjan
 * Implemented fetch statements for a particular card with year and month as parameters (13th March)
 
 ### Week - 3:
-* Implementing Error Handling (16th March)
+* Implemented Error Handling (16th March - 17th March)
+* Implementing the isAdmin (17th March)
 
 
 
