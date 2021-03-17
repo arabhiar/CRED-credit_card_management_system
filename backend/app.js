@@ -3,7 +3,7 @@ const app = express();
 const db = require('./models');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { notFound, errorHandler } = require('./middlewares/errorHandling');
+const { errorHandler } = require('./middlewares/errorHandling');
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
@@ -17,14 +17,17 @@ const authRoute = require('./routes/auth');
 const cardRoute = require('./routes/card');
 
 
-
 // Routes middlewares
-
-
 app.use('/api/user', authRoute);
 app.use('/', cardRoute);
 
-app.use(notFound);
+// 404 
+app.use((req, res) => {
+    res.statusCode = 404;
+    throw new Error(`404 not found`);
+})
+
+// Error Handler
 app.use(errorHandler);
 
 
