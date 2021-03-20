@@ -8,5 +8,13 @@ module.exports = {
     login: (req, res, next) => {
         authService.login(req.body, res)
             .catch(next);
+    },
+    getProfile: (req, res, next) => {
+        authService.getProfile(req,res)
+            .catch(next);
+    },
+    editProfile: (req, res, next) => {
+        authService.editProfile(req, res)
+            .catch(next);
     }
 };
