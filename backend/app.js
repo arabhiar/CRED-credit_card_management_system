@@ -19,7 +19,7 @@ const cardRoute = require('./routes/card');
 
 // Routes middlewares
 app.use('/api/user', authRoute);
-app.use('/api/card', cardRoute);
+app.use('/api/cards', cardRoute);
 
 // 404 
 app.use((req, res) => {

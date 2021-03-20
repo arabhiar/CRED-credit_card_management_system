@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         authCode: {
             allowNull: true,
             type: DataTypes.STRING,
-        }
+        },
     });
 
     Profile.associate = models => {
