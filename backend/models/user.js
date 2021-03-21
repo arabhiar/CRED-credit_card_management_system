@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         password: {
             type: DataTypes.STRING,
             allowNull: false
-        }
+        },
     }, options)
 
     User.associate = models => {
