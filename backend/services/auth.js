@@ -75,6 +75,7 @@ module.exports = {
 
     const userId = req.user.id;
 
+
     const userProfile = await db.Profile.findOne({
       where: {
         UserId: userId,
@@ -85,6 +86,7 @@ module.exports = {
         if (req.body.name) {
           duplicate.name = req.body.name;
         }
+
 
         if (req.body.authCode) {
           duplicate.authCode = req.body.authCode;
