@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import './styles.scss';
 
 const getTransformValue = (v1, v2, value) => {
   return (((v1 / v2) * value - value / 2) * 1).toFixed(1);

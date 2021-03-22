@@ -7,8 +7,6 @@ const morgan = require('morgan');
 const { errorHandler } = require('./middlewares/errorHandling');
 dotenv.config();
 
-const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
-
 const PORT = process.env.PORT || 5000;
 
 // middlwares
@@ -38,7 +36,7 @@ app.use(errorHandler);
 
 
 
-app.use(notFound);
+// app.use(notFound);
 app.use(errorHandler);
 
 db.sequelize.sync().then(() => {

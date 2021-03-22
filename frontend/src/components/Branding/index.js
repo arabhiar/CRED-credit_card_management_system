@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+import './styles.scss';
 
 const Branding = () => {
   return (
@@ -9,11 +10,11 @@ const Branding = () => {
       <p
         className="container"
         style={{
-          fontFamily: "Gilroy-Bold",
-          fontSize: "1.4vw",
-          letterSpacing: "-0.2px",
-          lineHeight: "2vw",
-          textAlign: "center",
+          fontFamily: 'Gilroy-Bold',
+          fontSize: '1.4vw',
+          letterSpacing: '-0.2px',
+          lineHeight: '2vw',
+          textAlign: 'center',
         }}
       >
         join 5.9M+ members and win rewards worth ₹5 crores daily.

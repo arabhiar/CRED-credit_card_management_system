@@ -1,41 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Oswald:300,400,500,700');
-
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800');
-
-@import url('http://fonts.cdnfonts.com/css/gilroy-bold');
-
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800,900|Open Sans:400,600,800');
-
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap');
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-main {
-  min-height: 55vh;
-}
-
-.sign-in:hover {
-  background-color: #333940;
-}
-
-.btn:active {
-  transform: translate(0px, 5px);
-  -webkit-transform: translate(0px, 5px);
-  box-shadow: 0px 1px 0px 0px;
-}
-
 $gr-1: linear-gradient(170deg, #f40076 0%, #df98fa 100%);
 $gr-2: linear-gradient(170deg, #9055ff 0%, #13e2da 100%);
 $gr-3: linear-gradient(170deg, #d6ff7f 0%, #00b3cc 100%);
@@ -166,4 +128,3 @@ $gr-3: linear-gradient(170deg, #d6ff7f 0%, #00b3cc 100%);
   line-height: 7vw;
   font-family: 'Gilroy-Bold', sans-serif;
 }
-

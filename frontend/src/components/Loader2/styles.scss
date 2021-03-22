@@ -1,0 +1,162 @@
+$duration: 1.2s;
+$size: 5rem;
+
+.loader2 {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: $size;
+  width: $size;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.loader2-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: $size;
+  width: $size;
+
+  &:nth-of-type(1) {
+    transform: rotate(0);
+  }
+
+  &:nth-of-type(2) {
+    transform: rotate(180deg);
+  }
+}
+
+.loader2-block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: $size;
+  width: $size;
+  background: #333940;
+  animation: move3 $duration * 4 steps(1) infinite;
+
+  &:nth-of-type(1) {
+    animation-delay: 0;
+  }
+
+  &:nth-of-type(2) {
+    animation-delay: $duration / 5;
+  }
+
+  &:nth-of-type(3) {
+    animation-delay: 2 * $duration / 5;
+  }
+
+  &:nth-of-type(4) {
+    animation-delay: 3 * $duration / 5;
+  }
+
+  > .item {
+    float: left;
+    height: $size / 2;
+    width: $size / 2;
+    background: #fff;
+
+    &:nth-of-type(1),
+    &:nth-of-type(2) {
+      animation: move1 $duration linear infinite;
+    }
+
+    &:nth-of-type(3),
+    &:nth-of-type(4) {
+      animation: move2 $duration linear infinite;
+    }
+
+    &:nth-of-type(1) {
+      animation-delay: 0;
+    }
+
+    &:nth-of-type(2) {
+      animation-delay: $duration / 10;
+    }
+
+    &:nth-of-type(3) {
+      animation-delay: 2 * $duration / 10;
+    }
+
+    &:nth-of-type(4) {
+      animation-delay: 3 * $duration / 10;
+    }
+  }
+}
+
+@keyframes move1 {
+  0% {
+    transform: rotate(0deg);
+    transform-origin: 50% 50%;
+  }
+  7% {
+    transform: rotate(180deg);
+    transform-origin: 100% 0%;
+  }
+  15% {
+    transform: rotate(270deg);
+    transform-origin: 150% -50%;
+  }
+  20% {
+    transform: rotate(270deg);
+    transform-origin: 150% -50%;
+  }
+  70% {
+    transform: rotate(270deg);
+    transform-origin: 150% -50%;
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(270deg);
+    transform-origin: 150% -50%;
+    opacity: 0;
+  }
+}
+
+@keyframes move2 {
+  0% {
+    transform: rotate(0deg);
+    transform-origin: 50% 50%;
+  }
+  7% {
+    transform: rotate(-180deg);
+    transform-origin: 100% 100%;
+  }
+  15% {
+    transform: rotate(-270deg);
+    transform-origin: 150% 150%;
+  }
+  20% {
+    transform: rotate(-270deg);
+    transform-origin: 150% 150%;
+  }
+  70% {
+    transform: rotate(-270deg);
+    transform-origin: 150% 150%;
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(-270deg);
+    transform-origin: 150% 150%;
+    opacity: 0;
+  }
+}
+
+@keyframes move3 {
+  0% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

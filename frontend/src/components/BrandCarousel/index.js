@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+import './styles.scss';
 
 // props image address, profile heading profile description, alternative name
 
@@ -6,7 +7,9 @@ const BrandCarousel = () => {
   return (
     <>
       <div className="container">
-        <h1 className="text-center" style={{color: "#333840"}}>OFFERS YOU CAN'T REFUSE</h1>
+        <h1 className="text-center" style={{ color: '#333840' }}>
+          OFFERS YOU CAN'T REFUSE
+        </h1>
         <hr></hr>
         <div className="row">
           <div className="col-md-4">
