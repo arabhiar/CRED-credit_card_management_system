@@ -77,7 +77,7 @@ module.exports = {
                 UserId: userId,
             }
         }).then(async(data) => {
-                const duplicate = data;
+                const duplicate = {...data};
                 if(req.body.name) {
                     duplicate.name = req.body.name;
                 }
