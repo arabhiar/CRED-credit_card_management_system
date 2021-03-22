@@ -1,0 +1,179 @@
+.credit-card {
+    position: relative;
+    width: 508px;
+    height: 314px;
+    transform-style: preserve-3d;
+    perspective: 500px;
+    z-index: 2;
+  }
+  
+  .credit-card .face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 15px 15px rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(28px);
+    transform-style: preserve-3d;
+    transition: 1s;
+    backface-visibility: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .credit-card:hover .face.front {
+    transform: rotateY(180deg);
+  }
+  
+  .credit-card .face.back {
+    transform: rotateY(180deg);
+  }
+  
+  .credit-card:hover .face.back {
+    transform: rotateY(360deg);
+  }
+  
+  .credit-card .face.front::before {
+    content: '';
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  
+  .credit-card .face.front::after {
+    content: '';
+    position: absolute;
+    bottom: 40px;
+    right: 80px;
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.7;
+  }
+  
+  .credit-card .face.front .debit {
+    position: absolute;
+    left: 40px;
+    top: 30px;
+    color: #fff;
+    font-weight: 500;
+  }
+  
+  .credit-card .face.front .bank {
+    position: absolute;
+    right: 40px;
+    top: 25px;
+    color: #fff;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 24px;
+  }
+  
+  .credit-card .face.front .chip {
+    position: absolute;
+    top: 80px;
+    left: 50px;
+    max-width: 64px;
+  }
+  
+  .credit-card .face.front .number {
+    position: absolute;
+    bottom: 130px;
+    left: 40px;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 6px;
+    font-size: 18px;
+    text-shadow: 0 2px 1px #0005;
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  .credit-card .face.front .valid {
+    position: absolute;
+    bottom: 90px;
+    left: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: 300;
+    line-height: 1em;
+    text-align: right;
+  }
+  
+  .credit-card .face.front .valid span:last-child {
+    margin-left: 20px;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 2px;
+  }
+  
+  .credit-card .face.front .credit-card-holder {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    color: #fff;
+    font-weight: 300;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  
+  .credit-card .face.back .blackbar {
+    position: absolute;
+    top: 40px;
+    width: 100%;
+    height: 60px;
+    background: #000;
+  }
+  
+  .credit-card .face.back .cvvtext {
+    position: absolute;
+    top: 120px;
+    left: 30px;
+  }
+  
+  .credit-card .face.back .cvvtext .white-bar {
+    position: relative;
+    width: 400px;
+    height: 40px;
+    background: #fff;
+    margin-top: 5px;
+  }
+  
+  .credit-card .face.back .cvvtext .cvv {
+    position: relative;
+    top: -35px;
+    left: 345px;
+    background: #ccc;
+    color: #111;
+    width: 50px;
+    height: 30px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .credit-card .face.back .text {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    right: 30px;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1 4em;
+    font-weight: 300;
+  }
