@@ -39,7 +39,7 @@ module.exports = {
             }).catch(() => {
                 throw new Error(errorName);
             }) 
-            res.send(newCard);
+            res.status(200).send(newCard);
         }
         
     },
@@ -99,6 +99,8 @@ module.exports = {
                 cardId = card.id;
             }
         }
+
+        
         
         const currentTransaction = await db.Transaction.create({
             amount: req.body.amount,

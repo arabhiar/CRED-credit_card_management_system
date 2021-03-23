@@ -8,9 +8,9 @@ const cardController = require('../controllers/card');
 const statementSchema = require('../schemas/statementSchema');
 
 
-router.post('/', [verifyToken(), cardSchema, luhnValidation], cardController.addCard); // firstly verifying if user is loggedIn or not, then verifying CardNumber using Luhn Validation
+router.post('/', [verifyToken(), cardSchema, luhnValidation], cardController.addCard); 
 
-router.get('/', [verifyToken()], cardController.getAllCards); // firstly checking if user is logged in or not, then searching the cards related to particular id
+router.get('/', [verifyToken()], cardController.getAllCards); 
 
 router.post('/:id/pay', [ verifyToken(), billSchema, luhnValidation ], cardController.payBill); 
 
