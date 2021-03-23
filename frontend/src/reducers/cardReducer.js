@@ -13,9 +13,9 @@ export const cardAddReducer = (state = {}, action) => {
     case CARD_ADD_REQUEST:
       return { loading: true };
     case CARD_ADD_SUCCESS:
-      return { loading: false, card: action.payload };
+      return { loading: false, card: action.payload, success: true };
     case CARD_ADD_FAIL:
-      return { loading: false, error: action.payload };
+      return { loading: false, error: action.payload, success: false };
     case CARD_ADD_RESET:
       return {};
     default:

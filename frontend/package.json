@@ -26,6 +26,8 @@
     "redux-thunk": "^2.3.0",
     "sass": "^1.32.8",
     "sass-loader": "^10.1.1",
+    "sweetalert2": "^10.15.6",
+    "sweetalert2-react-content": "^3.3.1",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
