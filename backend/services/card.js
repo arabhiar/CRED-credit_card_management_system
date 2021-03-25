@@ -63,6 +63,7 @@ module.exports = {
             
             let originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber)
             let cardInfo = {
+                id: card.id,
                 cardOwnerName: card.cardOwnerName,
                 cardNumber: originalCardNumber,
                 expiryMonth: card.expiryMonth,

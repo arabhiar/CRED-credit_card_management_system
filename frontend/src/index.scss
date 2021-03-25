@@ -1,12 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Oswald:300,400,500,700');
-
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800');
 
-@import url('http://fonts.cdnfonts.com/css/gilroy-bold');
-
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800,900|Open Sans:400,600,800');
-
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap');
+// @import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800,900|Open Sans:400,600,800');
 
 body {
   margin: 0;
@@ -17,9 +11,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.form-label {
+  font-weight: normal;
+  padding-top: 10px;
+}
+
+.normal-text {
+  font-weight: normal;
 }
 
 main {
@@ -30,140 +28,20 @@ main {
   background-color: #333940;
 }
 
+.btn {
+  border-radius: 4px;
+}
+
+.form-control {
+  border-radius: 4px;
+}
+
 .btn:active {
   transform: translate(0px, 5px);
   -webkit-transform: translate(0px, 5px);
   box-shadow: 0px 1px 0px 0px;
 }
 
-$gr-1: linear-gradient(170deg, #f40076 0%, #df98fa 100%);
-$gr-2: linear-gradient(170deg, #9055ff 0%, #13e2da 100%);
-$gr-3: linear-gradient(170deg, #d6ff7f 0%, #00b3cc 100%);
-
-.gr-1 {
-  background: $gr-1;
+.disabled-btn {
+  cursor: not-allowed;
 }
-.gr-2 {
-  background: $gr-2;
-}
-.gr-3 {
-  background: $gr-3;
-}
-
-* {
-  transition: 0.5s;
-}
-
-.h-100 {
-  height: 60vh !important;
-}
-
-@media (max-width: 768px) {
-  .h-100 {
-    height: 100vh !important;
-  }
-}
-.align-middle {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.column {
-  margin-top: 3rem;
-  padding-left: 3rem;
-  &:hover {
-    padding-left: 0;
-    .card .txt {
-      margin-left: 1rem;
-      h1,
-      p {
-        color: rgba(255, 255, 255, 1);
-        opacity: 1;
-      }
-    }
-    a {
-      color: rgba(255, 255, 255, 1);
-      &:after {
-        width: 10%;
-      }
-    }
-  }
-}
-.card {
-  min-height: 170px;
-  margin: 0;
-  padding: 1.7rem 1.2rem;
-  border: none;
-  border-radius: 0;
-  color: rgba(0, 0, 0, 1);
-  letter-spacing: 0.05rem;
-  font-family: 'Oswald', sans-serif;
-  box-shadow: 0 0 21px rgba(0, 0, 0, 0.27);
-  .txt {
-    margin-left: -3rem;
-    z-index: 1;
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 300;
-      text-transform: uppercase;
-    }
-    p {
-      font-size: 0.8rem;
-      font-family: 'Open Sans', sans-serif;
-      letter-spacing: 0rem;
-      margin-top: 33px;
-      opacity: 0;
-      color: rgba(255, 255, 255, 1);
-    }
-  }
-  a {
-    z-index: 3;
-    font-size: 0.7rem;
-    color: rgba(0, 0, 0, 1);
-    margin-left: 1rem;
-    position: relative;
-    bottom: -0.5rem;
-    text-transform: uppercase;
-    &:after {
-      content: '';
-      display: inline-block;
-      height: 0.5em;
-      width: 0;
-      margin-right: -100%;
-      margin-left: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 1);
-      transition: 0.5s;
-    }
-  }
-  .ico-card {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-  i {
-    position: relative;
-    right: -50%;
-    top: 60%;
-    font-size: 12rem;
-    line-height: 0;
-    opacity: 0.2;
-    color: rgba(255, 255, 255, 1);
-    z-index: 0;
-  }
-}
-
-.slogan {
-  font-size: 6vw;
-  line-height: 6vw;
-  text-align: center;
-  letter-spacing: -1.5px;
-  line-height: 7vw;
-  font-family: 'Gilroy-Bold', sans-serif;
-}
-

@@ -51,7 +51,7 @@ export const listCards = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`api/cards`, config);
+    const { data } = await axios.get(`api/cards`, config);
     dispatch({ type: CARD_LIST_SUCCESS, payload: data });
   } catch (err) {
     dispatch({

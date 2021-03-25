@@ -9,6 +9,7 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.0",
     "axios": "^0.21.1",
+    "formik": "^2.2.6",
     "jquery": "^3.6.0",
     "node-sass": "^5.0.0",
     "react": "^17.0.1",
@@ -28,7 +29,8 @@
     "sass-loader": "^10.1.1",
     "sweetalert2": "^10.15.6",
     "sweetalert2-react-content": "^3.3.1",
-    "web-vitals": "^1.1.0"
+    "web-vitals": "^1.1.0",
+    "yup": "^0.32.9"
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",
