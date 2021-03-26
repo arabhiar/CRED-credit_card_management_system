@@ -5,8 +5,8 @@ const cardSchema = (req, res, next) => {
         cardOwnerName: Joi.string().required(),
         cardNumber: Joi.string().required(),
         expiryMonth: Joi.number().integer().min(1).max(12).required(),
-        expiryYear: Joi.number().integer().min(2021).max(3000).required()
-        
+        expiryYear: Joi.number().integer().min(2021).max(3000).required(),
+        authCode: Joi.string(),
     })
     verifySchema(req, next, schema);
 }

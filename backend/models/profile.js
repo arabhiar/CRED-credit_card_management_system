@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Profile.associate = models => {
+        Profile.belongsToMany(models.Card, {
+            through: 'Profile_Card'
+        });
         Profile.belongsTo(models.User, {
             foreignKey: {
                 alowNull: false
