@@ -1,15 +1,13 @@
 const db = require('../models');
-let calculateOutstandingAmount = async(id, cardId) => {
+let calculateOutstandingAmount = async(cardId) => {
     let amount = 0;
     let statements = await db.Transaction.findAll({
         where: {
-            UserId: id,
             CardId: cardId
         }
     });
     
     for(const statement of statements) {
-
         if(statement.credDeb) {
             amount -= parseFloat(statement.amount);
         }

@@ -29,7 +29,7 @@ module.exports = {
   signup: async (params, res) => {
     // validate
     if (await db.User.findOne({ where: { email: params.email } })) {
-      res.statusCode = 200;
+      res.statusCode = 500;
       throw new Error(`email "${params.email}" is already registered!`);
     }
 
@@ -60,9 +60,9 @@ module.exports = {
       where: {
         UserId: userId,
       },
-    }).catch(() => {
+    }).catch((err) => {
       res.statusCode = 500;
-      throw new Error(`No profile for id: ${userId}`);
+      throw new Error(err);
     });
     res.status(200).json(userProfile);
   },

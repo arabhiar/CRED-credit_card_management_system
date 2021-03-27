@@ -43,12 +43,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Card.associate = (models) => {
-        Card.belongsTo(models.User, {
-            foreignKey: {
-                alowNull: false
-            }
-        });
-        Card.hasMany(models.Transaction, {
+        Card.belongsToMany(models.Profile, { through: 'Profile_Card' });
+        Card.hasMany(models.Transaction, { // one card can have many transactions
             onDelete: 'cascade'
         });
     }
