@@ -9,6 +9,10 @@ module.exports = {
         cardService.getAllCards(req, res)
             .catch(next);
     },
+    getCardById: async(req, res, next) => {
+        cardService.getCardById(req, res)
+            .catch(next);
+    },
     payBill: async(req, res, next) => {
         cardService.payBill(req, res)
             .catch(next);
