@@ -26,6 +26,8 @@ const ProfileScreen2 = (props) => {
   const dispatch = useDispatch();
 
   const [readOnly, setReadOnly] = useState(true);
+  const [updateAlert, setUpdateAlert] = useState(false);
+  const [cardAlert, setCardAlert] = useState(false);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -34,11 +36,7 @@ const ProfileScreen2 = (props) => {
   const { user, loading, error } = userDetails;
 
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-  const {
-    success: updateSuccess,
-    error: updateError,
-    loading: updateLoading,
-  } = userUpdateProfile;
+  const { success: updateSuccess } = userUpdateProfile;
 
   const cardList = useSelector((state) => state.cardList);
   const { cards, error: errorCards, loading: loadingCards } = cardList;
@@ -47,13 +45,16 @@ const ProfileScreen2 = (props) => {
     if (!userInfo) {
       history.push('/login');
     } else {
-      dispatch(listCards());
+      // dispatch(listCards());
       if (!user.email || updateSuccess) {
         if (updateSuccess) {
+          setUpdateAlert(true);
           dispatch({ type: USER_UPDATE_PROFILE_RESET });
           setReadOnly(true);
         }
         dispatch(getUserDetails('profile'));
+        dispatch(listCards());
+        setCardAlert(true);
       } else {
         initialValues.name = user.name;
         initialValues.email = user.email;
@@ -65,12 +66,28 @@ const ProfileScreen2 = (props) => {
     dispatch(updateUserProfile({ name: values.name }));
   };
 
+  const updateCloseHandler = () => {
+    setUpdateAlert(false);
+  };
+
+  const cardCloseHandler = () => {
+    setCardAlert(false);
+  };
+
   return (
     <>
       <Row>
         <Col md={5}>
           <div className="text-center">
             <h2>User Profile</h2>
+            {updateAlert && (
+              <AlertMessage
+                onCloseHandler={updateCloseHandler}
+                variant="success"
+              >
+                Profile updated.
+              </AlertMessage>
+            )}
             {loading ? (
               <Loader color={'#333940'} />
             ) : (
@@ -170,13 +187,17 @@ const ProfileScreen2 = (props) => {
         <Col md={7}>
           <div className="text-center">
             <h2>My Cards</h2>
+            <LinkContainer to="/cards/add" style={{ marginBottom: '15px' }}>
+              <Button>
+                <i className="fas fa-plus"></i> Add Card
+              </Button>
+            </LinkContainer>
             {loadingCards ? (
               <Loader color={'#333940'} />
-            ) : errorCards ? (
-              <AlertMessage
-                variant="danger"
-                onCloseHandler={() => console.log('Close')}
-              ></AlertMessage>
+            ) : errorCards && cardAlert ? (
+              <AlertMessage variant="danger" onCloseHandler={cardCloseHandler}>
+                {errorCards}
+              </AlertMessage>
             ) : (
               <Table striped bordered hover responsive className="table-sm">
                 <thead>

@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.transaction-table {
+  font-family: 'Poppins', sans-serif;
+  font-weight: normal;
+}
+
+.dark {
+  background-color: #222;
+}
+
+.text {
+  color: #bbb;
+}
+
+.money {
+  font-family: 'Lato', sans-serif;
+}
+
+.fa-arrow-down,
+.fa-arrow-up {
+  color: #28df99;
+}
+
+.fa-arrow-up {
+  color: red;
+}
+
+.table-dark {
+  background-color: #333940;
+}
+
+.table thead th {
+  text-transform: uppercase;
+  color: #bbb;
+  font-size: 12px;
+}
+
+.table thead th,
+.table td,
+.table th {
+  border: none;
+  overflow: auto auto;
+}
+
+tbody tr td.text-muted {
+  font-family: 'Lato', sans-serif;
+}
+
+.results span {
+  color: #bbb;
+  font-size: 12px;
+}
+
+.results span b {
+  font-family: 'Lato', sans-serif;
+}
+
+.pagination .page-item .page-link {
+  background-color: #444;
+  color: #fff;
+  padding: 0.3rem 0.75rem;
+  border: none;
+  border-radius: 0;
+}
+
+.pagination .page-item .page-link span {
+  font-size: 16px;
+}
+
+.pagination .page-item.disabled .page-link {
+  background-color: #333;
+  color: #eee;
+  cursor: crosshair;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .wrapper {
+    margin: auto;
+  }
+}
+
+@media (min-width: 300px) and (max-width: 767px) {
+  .wrapper {
+    margin: auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .wrapper {
+    padding: 10px 15px;
+    margin: auto;
+  }
+}

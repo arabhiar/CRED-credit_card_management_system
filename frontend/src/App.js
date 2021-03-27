@@ -13,6 +13,8 @@ import AddCardScreen from './screens/AddCardScreen';
 import LoginScreen2 from './screens/LoginScreen2';
 import RegisterScreen2 from './screens/RegisterScreen2';
 import ProfileScreen2 from './screens/ProfileScreen2';
+import CardScreen from './screens/CardScreen';
+import TransactionTable from './components/TransactionTable';
 
 function App() {
   return (
@@ -22,10 +24,11 @@ function App() {
         <Container>
           <Route path="/login" component={LoginScreen2} />
           <Route path="/register" component={RegisterScreen2} />
-          <Route path="/profile" component={ProfileScreen2} exact/>
+          <Route path="/profile" component={ProfileScreen2} exact />
           <Route path="/" component={HomeScreen} exact />
-          <Route path="/credit" component={CreditCard2} exact />
-          <Route path="/add" component={AddCardScreen} />
+          <Route path="/credit" component={CardScreen} exact />
+          <Route path="/cards/add" component={AddCardScreen} exact />
+          <Route path="/transaction" component={TransactionTable} exact />
         </Container>
       </main>
       <Footer />

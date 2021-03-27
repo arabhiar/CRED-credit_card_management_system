@@ -23,7 +23,7 @@ export const addCard = (card) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`api/cards`, card, config);
+    const { data } = await axios.post(`/api/cards`, card, config);
     dispatch({ type: CARD_ADD_SUCCESS, payload: data });
   } catch (err) {
     dispatch({
@@ -51,7 +51,7 @@ export const listCards = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`api/cards`, config);
+    const { data } = await axios.get(`/api/cards`, config);
     dispatch({ type: CARD_LIST_SUCCESS, payload: data });
   } catch (err) {
     dispatch({
