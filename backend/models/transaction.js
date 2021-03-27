@@ -37,12 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     Transaction.associate = (models) => {
-        Transaction.belongsTo(models.User, {
-            foreignKey: {
-                allowNull: false,
-            },
-        })
-        Transaction.belongsTo(models.Card, {
+        Transaction.belongsTo(models.Card, { 
             foreignKey: {
                 allowNull: false,
             }

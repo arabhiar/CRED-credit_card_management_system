@@ -7,59 +7,156 @@ const { Op } = require('sequelize');
 
 module.exports = {
     addCard: async(req, res) => { 
-        let errorName = 'Internal Server Error!';
-        res.statusCode = 500;
-        
         const hashedCardNumber = await encryptDecrypt.encrypt(req.body.cardNumber);
+
+        // we have to check for all the cards
         const userCards = await db.Card.findAll({
-            where: {
-                UserId: req.user.id,
-            },
+            attributes: ['cardNumber', 'cardOwnerName', 'expiryMonth', 'expiryYear', 'id'],
+            include: [db.Profile],
         })
-        let cardExist = false;
-        for(const card of userCards) {
-            const currentCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
-            if(currentCardNumber === req.body.cardNumber) {
-                cardExist = true;
-                break;
+
+        // if there is not authCode in req
+        if(req.body.authCode === undefined) {
+            for(const card of userCards) {
+                const currentCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
+
+                // if we found the same cardNumber
+                if(currentCardNumber === req.body.cardNumber) {
+                    for (const profile of card.Profiles) {
+
+                        // if the found card is added by the same user
+                        if(req.user.id === profile.UserId) {
+                            res.statusCode = 500;
+                            throw new Error('Card is Already Added');
+                        }   
+                    }
+
+                    // if the found card is added by some other user
+                    res.statusCode = 500;
+                    throw new Error('You\'re are not authorised to add this card');
+                }   
             }
-        }
-        if(cardExist === true) {
-            res.statusCode = 200;
-            errorName = `Card is already added!`;
-            throw new Error(errorName);
-        }
-        else {
+
+            // now we didn't encounter any card with user input card number, so here we assume the user is legit and we will add the card into db.
+            const profileAssociated = await db.Profile.findOne({
+                where: {
+                    UserId: req.user.id,
+                }
+            });
+
             const newCard = await db.Card.create({
                 cardOwnerName: req.body.cardOwnerName,
                 cardNumber: hashedCardNumber,
                 expiryMonth: req.body.expiryMonth,
                 expiryYear: req.body.expiryYear,
-                UserId: req.user.id
-            }).catch(() => {
-                throw new Error(errorName);
-            }) 
+            }).catch((err) => {
+                throw new Error(err);
+            })
+
+            newCard.addProfile(profileAssociated);
             res.status(200).send(newCard);
+            return;
         }
-        
+
+        // if there is authCode entered while entering the credit card
+        else {
+            let sameCardNumberExist = false;
+            for(const card of userCards) {
+                const currentCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
+
+                // we will see if there exist the same cardNumber
+                if(currentCardNumber === req.body.cardNumber) {
+                    sameCardNumberExist = true;
+                    for(const profile of card.Profiles) {
+
+                        // if the same cardNumber is added by the user itself
+                        if(profile.UserId === req.user.id) {
+                            res.statusCode = 500;
+                            throw new Error('Card is Already Added');
+                        }
+                    }
+
+                    // if the same cardNumber is not added by the input user, we will check for the authCode
+                    for(const profile of card.Profiles) {
+
+                        // if the authCode is same of the input user and some other user,
+                        if(profile.authCode === req.body.authCode) {
+
+                            // we have to also now verify name, and expiry
+                            if(card.expiryMonth === req.body.expiryMonth && card.expiryYear === req.body.expiryYear && card.cardOwnerName === req.body.cardOwnerName) {
+
+                                // now we can add the card
+                                const profileAssociated = await db.Profile.findOne({
+                                    where: {
+                                        UserId: req.user.id,
+                                    }
+                                });
+                                const cardAssociated = await db.Card.findOne({
+                                    where: {
+                                        id: card.id,
+                                    }
+                                });
+                                cardAssociated.addProfile(profileAssociated);
+                                res.status(200).json(cardAssociated);
+                                cardAdded = true;
+                                return;
+                            }
+
+                            // if the name or expiry is wrong
+                            else {
+                                res.statusCode = 500;
+                                throw new Error('Wrong Card Details or Auth Code!')
+                            }
+                        }
+                    }
+                }
+            }
+
+            // if same cardNumber exists, but authCode doesn't match
+            if(sameCardNumberExist) {
+                res.statusCode = 500;
+                throw new Error('Wrong Card Details or Auth Code!');
+            }
+        }
+
+        // this means this is a new card which is not in the db, so we can add this
+        const profileAssociated = await db.Profile.findOne({
+            where: {
+                UserId: req.user.id,
+            }
+        });
+
+        const newCard = await db.Card.create({
+            cardOwnerName: req.body.cardOwnerName,
+            cardNumber: hashedCardNumber,
+            expiryMonth: req.body.expiryMonth,
+            expiryYear: req.body.expiryYear,
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        newCard.addProfile(profileAssociated);
+        res.status(200).send(newCard);
     },
     getAllCards: async(req, res) => {
-        let errorName = 'Internal Server Error';
-        let statusCode = 500;
-        const userCards = await db.Card.findAll({
+
+        // we have to get cards associated with the current user.
+        const userCards = await db.Profile.findAll({
             where: {
-                UserId: req.user.id
-            },
-            include: [db.User]
-        }).catch(() => {
-            res.statusCode = statusCode;
-            throw new Error(errorName);
+                UserId: req.user.id // getting the profile associated with the currentLoggedIn user
+            }, 
+            include: [db.Card], // getting the card associated with the currentProfile
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
         })
+
 
         let data = [];
 
-        for(const card of userCards) {
-            let outstandingAmount = await calculateOutstandingAmount(req.user.id, card.id);
+        for(const card of userCards[0].Cards) {
+            let outstandingAmount = await calculateOutstandingAmount(card.id);
             
             let originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber)
             let cardInfo = {
@@ -69,55 +166,67 @@ module.exports = {
                 expiryMonth: card.expiryMonth,
                 expiryYear: card.expiryYear,
                 outstandingAmount: outstandingAmount,
-                User: card.User
             }
             data.push(cardInfo);
         }
         res.send(data);
     },
     payBill: async(req, res) => {
-        // I've userId, cardNumber and amount, I've to make a transaction (credit) for this particular card.
 
-        // firstly we've to find the hashedCardNumber and then make a transaction corresponding to that.
-        let errorName = 'Internal Server Error';
-        let statusCode = 500;
-    
-        const userCards = await db.Card.findAll({
+        // getting the profile associated with the current loggedIn user
+        const profileAssociated = await db.Profile.findOne({
             where: {
                 UserId: req.user.id
             }
-        }).catch(() => {
-            res.statusCode = statusCode;
-            throw new Error(errorName);
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
         })
-        let hashedCardNumber = '';
-        let cardId = '';
-        
-        for(const card of userCards) {
-            const originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
-            if(originalCardNumber === req.params.id) {
-                hashedCardNumber = card.cardNumber;
-                cardId = card.id;
+
+        const allProfileCardIds = await db.Profile_Card.findAll({
+            where: {
+                ProfileId: profileAssociated.id
+            },
+            attributes: ['CardId'] // getting all the cardIds associated with the current loggedIn user profile
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        // we will now check for every card associated with current LoggedIn user,
+        for(const profileCardId of allProfileCardIds) {
+            const currentUserCard = await db.Card.findOne({
+                where: {
+                    id: profileCardId.CardId,
+                },
+                attributes: ['cardNumber']
+            }).catch((err) => {
+                res.statusCode(500);
+                throw new Error(err);
+            })
+
+            const currentUserCardNumber = await encryptDecrypt.decrypt(currentUserCard.cardNumber);
+
+            // if we get the same card number associated with the currentLoggedIn user.
+            if(req.params.id === currentUserCardNumber) {
+
+                // now we can simply create the new transaction
+                const currentTransaction = await db.Transaction.create({
+                    amount: req.body.amount,
+                    vendor: 'NA',
+                    credDeb: true,
+                    category: 'NA',
+                    cardNumber: currentUserCard.cardNumber,
+                    transactionDateTime: Date.now(),
+                    CardId: profileCardId.CardId,
+                }).catch((err) => {
+                    res.statusCode = 500;
+                    throw new Error(err);
+                })
+                res.status(200).send(currentTransaction);
+                return;
             }
         }
-
-        
-        
-        const currentTransaction = await db.Transaction.create({
-            amount: req.body.amount,
-            vendor: 'NA',
-            credDeb: true,
-            category: 'NA',
-            cardNumber: hashedCardNumber,
-            transactionDateTime: Date.now(),
-            CardId: cardId,
-            UserId: req.user.id,
-        }).catch(() => {
-            res.statusCode = statusCode;
-            throw new Error(errorName);
-        });
-
-        res.send({ message: "paid"});
     },
 
     getAllstatements: async(req, res) => {
@@ -130,90 +239,120 @@ module.exports = {
 
         month = parseInt(month) - 1;
 
-        const startingDate = new Date(year, month, 2);
+        const startingDate = new Date(year, month);
 
-        // get hashedCardNumber first
-        const userCards = await db.Card.findAll({
+        // getting the profile associated with the current loggedIn user
+        const profileAssociated = await db.Profile.findOne({
             where: {
                 UserId: req.user.id
             }
-        }).catch(() => {
-            res.statusCode = statusCode;
-            throw new Error(errorName);
-        });
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
 
-        let cardId = '';
-        
-        for(const card of userCards) {
-            const originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
-            if(originalCardNumber === req.params.id) {
-                cardId = card.id;
-                break;
+        const allProfileCardIds = await db.Profile_Card.findAll({
+            where: {
+                ProfileId: profileAssociated.id
+            },
+            attributes: ['CardId'] // getting all the cardIds associated with the current loggedIn user profile
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        // we will now check for every card associated with current LoggedIn user,
+        for(const profileCardId of allProfileCardIds) {
+            const currentCard = await db.Card.findOne({
+                where: {
+                    id: profileCardId.CardId,
+                },
+                attributes: ['cardNumber']
+            }).catch((err) => {
+                res.statusCode(500);
+                throw new Error(err);
+            })
+
+            const currentCardNumber = await encryptDecrypt.decrypt(currentCard.cardNumber);
+
+            // if we get the same card number associated with the currentLoggedIn user.
+            if(currentCardNumber === req.params.id) {
+                const statements = await db.Transaction.findAll({
+                    where: {
+                        CardId: profileCardId.CardId,
+                        transactionDateTime: { // we are now fetching all the statements between the starting and endingDate
+                            [Op.gt]: startingDate,
+                            [Op.lte]: endingDate,
+                        },
+                    },
+                    attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime']
+                }).catch((err) => {
+                    res.statusCode = 500;
+                    throw new Error(err);
+                })
+                res.status(200).send(statements);
+                return;
             }
         }
-
-        const statements = await db.Transaction.findAll({
-            where: {
-                UserId: req.user.id,
-                CardId: cardId,
-                transactionDateTime: {
-                    [Op.gte]: startingDate,
-                    [Op.lte]: endingDate,
-                }
-            }
-        }).catch(() => {
-            res.statusCode = statusCode;
-            throw new Error(errorName);
-        })
-        res.send(statements);
     },
     postStatement: async(req, res) => {
         // cardNumber, year, month
         let month = req.params.month;
         let year = req.params.year;
 
-        month = parseInt(month) - 1;
-
         // 0 indexing month and day
-
+        month = parseInt(month) - 1;
+        
         const startingDate = new Date(year, month, 2);
 
-        // get hashedCardNumber first
-        const userCards = await db.Card.findAll({
+        // getting the profile associated with the current loggedIn user
+        const profileAssociated = await db.Profile.findOne({
             where: {
                 UserId: req.user.id
             }
-        }).catch(() => {
-            res.statusCode = statusCode;
-            throw new Error(errorName);
-        });
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
 
-        let cardId = '';
-        let hashedCardNumber = '';
-        
-        for(const card of userCards) {
-            const originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
-            if(originalCardNumber === req.params.id) {
-                cardId = card.id;
-                hashedCardNumber = card.cardNumber;
-                break;
+        const allProfileCardIds = await db.Profile_Card.findAll({
+            where: {
+                ProfileId: profileAssociated.id
+            },
+            attributes: ['CardId'] // getting all the cardIds associated with the current loggedIn user profile
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        // if we get the same card number associated with the currentLoggedIn user.
+        for(const profileCardId of allProfileCardIds) {
+            const currentCard = await db.Card.findOne({
+                where: {
+                    id: profileCardId.CardId,
+                },
+                attributes: ['cardNumber']
+            }).catch((err) => {
+                res.statusCode(500);
+                throw new Error(err);
+            })
+
+            const currentCardNumber = await encryptDecrypt.decrypt(currentCard.cardNumber);
+
+            // if we get the same card number associated with the currentLoggedIn user.
+            if(currentCardNumber === req.params.id) {
+                const statement = await db.Transaction.create({
+                    amount: req.body.amount,
+                    vendor: req.body.vendor,
+                    credDeb: req.body.credDeb,
+                    category: req.body.category,
+                    cardNumber: currentCard.cardNumber,
+                    transactionDateTime: startingDate,
+                    CardId: profileCardId.CardId,
+                })
+                res.status(200).send(statement);
+                return;
             }
         }
-
-        const statements = await db.Transaction.create({
-            amount: req.body.amount,
-            vendor: req.body.vendor,
-            credDeb: req.body.credDeb,
-            category: req.body.category,
-            cardNumber: hashedCardNumber,
-            transactionDateTime: startingDate,
-            UserId: req.user.id,
-            CardId: cardId,
-        }).catch(() => {
-            res.statusCode = statusCode;
-            throw new Error(errorName);
-        })
-        res.send(statements);
-
     }
 }

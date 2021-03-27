@@ -28,12 +28,6 @@ module.exports = (sequelize, DataTypes) => {
     }, options)
 
     User.associate = models => {
-        User.hasMany(models.Card, {
-            onDelete: "cascade"
-        });
-        User.hasMany(models.Transaction, {
-            onDelete: "cascade"
-        });
         User.hasOne(models.Profile), {
             onDelete: "cascade"
         }
