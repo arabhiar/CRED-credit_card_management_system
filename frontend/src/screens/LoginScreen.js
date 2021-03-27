@@ -5,8 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { login } from '../actions/userActions';
 import FormContainer from '../components/FormContainer';
-import Alert from '../components/Alert';
+import AlertMessage from '../components/AlertMessage';
 import Loader from '../components/Loader';
+
 
 const LoginScreen = (props) => {
   const [email, setEmail] = useState('');
@@ -49,9 +50,9 @@ const LoginScreen = (props) => {
     <FormContainer>
       <h1>Sign In</h1>
       {show && error && (
-        <Alert variant="danger" onCloseHandler={onCloseHandler}>
+        <AlertMessage variant="danger" onCloseHandler={onCloseHandler}>
           {error}
-        </Alert>
+        </AlertMessage>
       )}
       {loading && <Loader color={'#333940'} />}
       <Form noValidate validated={validated} onSubmit={submitHandler}>

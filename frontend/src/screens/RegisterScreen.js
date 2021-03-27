@@ -7,7 +7,9 @@ import { register } from '../actions/userActions';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import Alert from '../components/Alert';
+import AlertMessage from '../components/AlertMessage';
+
+// (?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$  regex for strong password
 
 const RegisterScreen = (props) => {
   //   const [name, setName] = useState('');
@@ -38,7 +40,6 @@ const RegisterScreen = (props) => {
       e.preventDefault();
       e.stopPropagation();
     } else {
-      console.log('Hello');
       e.preventDefault();
       if (password !== confirmPassword) {
         setMessage("Password don't match.");
@@ -75,9 +76,9 @@ const RegisterScreen = (props) => {
       <h1>Sign Up</h1>
       {message && <Message variant="danger">{message}</Message>}
       {show && error && (
-        <Alert variant="danger" onCloseHandler={onCloseHandler}>
+        <AlertMessage variant="danger" onCloseHandler={onCloseHandler}>
           {error}
-        </Alert>
+        </AlertMessage>
       )}
       {loading && <Loader />}
       <Form noValidate validated={validated} onSubmit={submitHandler}>
