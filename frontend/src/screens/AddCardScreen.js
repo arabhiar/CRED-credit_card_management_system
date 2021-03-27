@@ -1,7 +1,10 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { addCard } from '../actions/cardActions';
 import CreditCard3 from '../components/CreditCard3';
 import CreditCardForm from '../components/CreditCardForm';
+import { CARD_ADD_RESET } from '../constants/cardConstants';
 
 const initialState = {
   cardNumber: '#### #### #### ####',
@@ -12,9 +15,29 @@ const initialState = {
   isCardFlipped: false,
 };
 
-const AddCardScreen = () => {
+const AddCardScreen = (props) => {
   const [state, setState] = useState(initialState);
   const [currentFocusedElm, setCurrentFocusedElm] = useState(null);
+
+  const { history } = props;
+  const dispatch = useDispatch();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const cardAdd = useSelector((state) => state.cardAdd);
+  const { success, loading } = cardAdd;
+
+  useEffect(() => {
+    if (success) {
+      dispatch({ type: CARD_ADD_RESET });
+      history.push('/profile');
+    } else {
+      if (!userInfo) {
+        history.push('/');
+      }
+    }
+  }, [userInfo, history, success, dispatch]);
 
   const updateStateValues = useCallback(
     (keyName, value) => {
@@ -54,6 +77,28 @@ const AddCardScreen = () => {
     setCurrentFocusedElm(null);
   }, []);
 
+  let removeSpaces = (num) => {
+    let arr = num.split(' ');
+    let ans = '';
+    // eslint-disable-next-line array-callback-return
+    arr.map((it) => {
+      ans += it;
+    });
+    return ans;
+  };
+
+  let onCardSubmit = (e) => {
+    e.preventDefault();
+    let data = {
+      cardOwnerName: state.cardHolder,
+      cardNumber: removeSpaces(state.cardNumber),
+      expiryMonth: parseInt(state.cardMonth),
+      expiryYear: parseInt(state.cardYear),
+    };
+    // console.log(data);
+    dispatch(addCard(data));
+  };
+
   return (
     <div className="wrapper">
       <CreditCardForm
@@ -65,6 +110,7 @@ const AddCardScreen = () => {
         cardDateRef={formFieldsRefObj.cardDate}
         onCardInputFocus={onCardFormInputFocus}
         onCardInputBlur={onCardInputBlur}
+        onCardSubmit={onCardSubmit}
       >
         <CreditCard3
           cardNumber={state.cardNumber}

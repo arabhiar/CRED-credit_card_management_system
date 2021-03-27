@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Form, Button, Row, Col } from 'react-bootstrap';
+import { Image, Form, Button, Row, Col, Table } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
+import Loader from 'react-spinners/PuffLoader';
 
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
+import AlertMessage from '../components/AlertMessage';
 import Message from '../components/Message';
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants';
 
@@ -29,6 +31,9 @@ const ProfileScreen = (props) => {
     error: updateError,
     loading: updateLoading,
   } = userUpdateProfile;
+
+  const loadingCards = null;
+  const errorCards = null;
 
   useEffect(() => {
     if (!userInfo) {
@@ -145,6 +150,19 @@ const ProfileScreen = (props) => {
               </Button>
             </Form>
           </div>
+        </Col>
+        <Col md={7}>
+          <h2>My Cards</h2>
+          {loadingCards ? (
+            <Loader color={'#333940'} />
+          ) : errorCards ? (
+            <AlertMessage
+              variant="danger"
+              onCloseHandler={() => console.log('Close')}
+            ></AlertMessage>
+          ) : (
+            <Table></Table>
+          )}
         </Col>
       </Row>
     </>

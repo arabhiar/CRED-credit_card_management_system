@@ -10,6 +10,9 @@ import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import CreditCard2 from './components/CreditCard2';
 import AddCardScreen from './screens/AddCardScreen';
+import LoginScreen2 from './screens/LoginScreen2';
+import RegisterScreen2 from './screens/RegisterScreen2';
+import ProfileScreen2 from './screens/ProfileScreen2';
 
 function App() {
   return (
@@ -17,9 +20,9 @@ function App() {
       <Header />
       <main className="py-3">
         <Container>
-          <Route path="/login" component={LoginScreen} />
-          <Route path="/register" component={RegisterScreen} />
-          <Route path="/profile" component={ProfileScreen} />
+          <Route path="/login" component={LoginScreen2} />
+          <Route path="/register" component={RegisterScreen2} />
+          <Route path="/profile" component={ProfileScreen2} exact/>
           <Route path="/" component={HomeScreen} exact />
           <Route path="/credit" component={CreditCard2} exact />
           <Route path="/add" component={AddCardScreen} />
