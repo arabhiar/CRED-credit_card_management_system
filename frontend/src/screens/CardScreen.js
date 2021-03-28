@@ -3,7 +3,12 @@ import { Row, Col, Button, Card } from 'react-bootstrap';
 
 import CreditCard2 from '../components/CreditCard2';
 
-const CardScreen = () => {
+const CardScreen = (props) => {
+
+  const {match, history} = props;
+
+  const cardId = match.params.id
+
   return (
     <>
       <Row>

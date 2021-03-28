@@ -45,7 +45,7 @@ const ProfileScreen2 = (props) => {
     if (!userInfo) {
       history.push('/login');
     } else {
-      // dispatch(listCards());
+      dispatch(listCards());
       if (!user.email || updateSuccess) {
         if (updateSuccess) {
           setUpdateAlert(true);
@@ -53,7 +53,7 @@ const ProfileScreen2 = (props) => {
           setReadOnly(true);
         }
         dispatch(getUserDetails('profile'));
-        dispatch(listCards());
+        // dispatch(listCards());
         setCardAlert(true);
       } else {
         initialValues.name = user.name;
@@ -218,7 +218,7 @@ const ProfileScreen2 = (props) => {
                         <td>{card.cardOwnerName}</td>
                         <td>{card.outstandingAmount}</td>
                         <td>
-                          <LinkContainer to={`/card/${card.id}`}>
+                          <LinkContainer to={`/cards/${card.id}`}>
                             <Button className="btn-sm" variant="light">
                               Details
                             </Button>
