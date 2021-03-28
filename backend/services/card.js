@@ -171,6 +171,26 @@ module.exports = {
         }
         res.send(data);
     },
+    getCardById: async(req, res) => {
+        const card = await db.Card.findOne({
+            where: {
+                id: req.params.card_id,
+            },
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+        const originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
+        const outstandingAmount = await calculateOutstandingAmount(card.id);
+        const cardInfo = {
+            cardOwnerName: card.cardOwnerName,
+            cardNumber: originalCardNumber,
+            expiryMonth: card.expiryMonth,
+            expiryYear: card.expiryYear,
+            outstandingAmount: outstandingAmount,
+        }
+        res.send(cardInfo); 
+    },
     payBill: async(req, res) => {
 
         // getting the profile associated with the current loggedIn user

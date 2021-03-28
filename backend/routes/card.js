@@ -7,12 +7,13 @@ const billSchema = require('../schemas/billSchema');
 const cardController = require('../controllers/card');
 const statementSchema = require('../schemas/statementSchema');
 
-
 router.post('/', [verifyToken(), cardSchema, luhnValidation], cardController.addCard); 
 
 router.get('/', [verifyToken()], cardController.getAllCards); 
 
-router.post('/:id/pay', [ verifyToken(), billSchema, luhnValidation ], cardController.payBill); 
+router.get('/:card_id', verifyToken(), cardController.getCardById);
+
+router.post('/:id/pay', [ verifyToken(), billSchema, luhnValidation ], cardController.payBill);
 
 router.get('/:id/statements/:year/:month', [verifyToken(), luhnValidation], cardController.getAllStatements);
 
