@@ -15,6 +15,10 @@ import {
   cardDetailsReducer,
 } from './reducers/cardReducer';
 
+import { statementDetailsReducer } from './reducers/statementReducer';
+
+import { payReducer } from './reducers/paymentReducer';
+
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
@@ -23,6 +27,8 @@ const reducer = combineReducers({
   cardAdd: cardAddReducer,
   cardList: cardListReducer,
   cardDetails: cardDetailsReducer,
+  statementDetails: statementDetailsReducer,
+  pay: payReducer,
 });
 
 const userInfoFromLocalStorage = localStorage.getItem('userInfo')

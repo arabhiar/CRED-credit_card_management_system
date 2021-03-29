@@ -81,8 +81,9 @@ export const getCardById = (id) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-
-    const { data } = axios.get(`/api/cards/${id}`, config);
+    console.log('URL is: ', `/api/cards/${id}`);
+    const { data } = await axios.get(`/api/cards/${id}`, config);
+    console.log('Card Details', data);
     dispatch({ type: CARD_DETAILS_SUCCESS, payload: data });
   } catch (err) {
     dispatch({

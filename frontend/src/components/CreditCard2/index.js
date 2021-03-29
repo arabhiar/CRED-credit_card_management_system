@@ -57,7 +57,11 @@ const CreditCard2 = (props) => {
         <div className="valid text">
           VALID <br /> THUR
         </div>
-        <div className="valid_date text">{`${card.expiryMonth.toString()}/${card.expiryYear.toString()}`}</div>
+        <div className="valid_date text">
+          {card.expiryMonth
+            ? `${card.expiryMonth.toString()}/${card.expiryYear.toString()}`
+            : ''}
+        </div>
         <div className="holder text">{card.cardOwnerName}</div>
         <div className="mastercard_icon svg"></div>
       </div>

@@ -25,10 +25,10 @@ function App() {
           <Route path="/login" component={LoginScreen2} />
           <Route path="/register" component={RegisterScreen2} />
           <Route path="/profile" component={ProfileScreen2} exact />
-          <Route path="cards/:id" component={CardScreen} />
+          <Route path="/cards/add" component={AddCardScreen} exact />
+          <Route path="/cards/:id" component={CardScreen} />
           <Route path="/" component={HomeScreen} exact />
           <Route path="/credit" component={CardScreen} exact />
-          <Route path="/cards/add" component={AddCardScreen} exact />
           <Route path="/transaction" component={TransactionTable} exact />
         </Container>
       </main>
