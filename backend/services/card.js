@@ -242,6 +242,8 @@ module.exports = {
                     cardNumber: currentUserCard.cardNumber,
                     transactionDateTime: Date.now(),
                     CardId: profileCardId.CardId,
+                    userAssociated: req.user.email,
+
                 }).catch((err) => {
                     res.statusCode = 500;
                     throw new Error(err);
@@ -308,7 +310,7 @@ module.exports = {
                             [Op.lte]: endingDate,
                         },
                     },
-                    attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime']
+                    attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
                 }).catch((err) => {
                     res.statusCode = 500;
                     throw new Error(err);
@@ -348,7 +350,6 @@ module.exports = {
             throw new Error(err);
         })
 
-        // if we get the same card number associated with the currentLoggedIn user.
         for(const profileCardId of allProfileCardIds) {
             const currentCard = await db.Card.findOne({
                 where: {
@@ -372,6 +373,7 @@ module.exports = {
                     cardNumber: currentCard.cardNumber,
                     transactionDateTime: startingDate,
                     CardId: profileCardId.CardId,
+                    userAssociated: req.user.email,
                 })
                 res.status(200).send(statement);
                 return;

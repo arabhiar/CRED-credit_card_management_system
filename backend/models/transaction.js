@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
         transactionDateTime: {
             allowNull: false,
             type: TIMESTAMP
+        },
+        userAssociated: {
+            type: DataTypes.STRING
         }
     })
 
