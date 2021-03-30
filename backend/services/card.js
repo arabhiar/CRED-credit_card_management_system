@@ -50,6 +50,7 @@ module.exports = {
                 cardNumber: hashedCardNumber,
                 expiryMonth: req.body.expiryMonth,
                 expiryYear: req.body.expiryYear,
+                cvv: req.body.cvv
             }).catch((err) => {
                 throw new Error(err);
             })
@@ -132,6 +133,7 @@ module.exports = {
             cardNumber: hashedCardNumber,
             expiryMonth: req.body.expiryMonth,
             expiryYear: req.body.expiryYear,
+            cvv: req.body.cvv
         }).catch((err) => {
             res.statusCode = 500;
             throw new Error(err);
