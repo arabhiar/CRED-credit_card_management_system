@@ -46,7 +46,7 @@ module.exports = {
             });
 
             const newCard = await db.Card.create({
-                cardOwnerName: req.body.cardOwnerName,
+                cardOwnerName: req.body.cardOwnerName.toUpperCase(),
                 cardNumber: hashedCardNumber,
                 expiryMonth: req.body.expiryMonth,
                 expiryYear: req.body.expiryYear,
@@ -84,7 +84,7 @@ module.exports = {
                         if(await bcrypt.compare(req.body.authCode, profile.authCode)) {
 
                             // we have to also now verify name, and expiry
-                            if(card.expiryMonth === req.body.expiryMonth && card.expiryYear === req.body.expiryYear && card.cardOwnerName === req.body.cardOwnerName) {
+                            if(card.expiryMonth === req.body.expiryMonth && card.expiryYear === req.body.expiryYear && card.cardOwnerName === req.body.cardOwnerName.toUpperCase()) {
 
                                 // now we can add the card
                                 const profileAssociated = await db.Profile.findOne({
@@ -128,7 +128,7 @@ module.exports = {
         });
 
         const newCard = await db.Card.create({
-            cardOwnerName: req.body.cardOwnerName,
+            cardOwnerName: req.body.cardOwnerName.toUpperCase(),
             cardNumber: hashedCardNumber,
             expiryMonth: req.body.expiryMonth,
             expiryYear: req.body.expiryYear,
