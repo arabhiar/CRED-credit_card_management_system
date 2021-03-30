@@ -87,9 +87,8 @@ module.exports = {
           duplicate.name = req.body.name;
         }
 
-
         if (req.body.authCode) {
-          duplicate.authCode = req.body.authCode;
+          duplicate.authCode = await bcrypt.hash(req.body.authCode, 10);
         }
         await data
           .update(duplicate)
