@@ -5,7 +5,7 @@ import {
   STATEMENT_BY_DATE_SUCCESS,
 } from '../constants/statementConstants';
 
-export const getStatementsByDate = (cardNo, year, month) => async (
+export const getStatementsByMonth = (cardNo, year, month) => async (
   dispatch,
   getState
 ) => {

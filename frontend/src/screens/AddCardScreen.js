@@ -5,6 +5,8 @@ import { addCard } from '../actions/cardActions';
 import CreditCard3 from '../components/CreditCard3';
 import CreditCardForm from '../components/CreditCardForm';
 import { CARD_ADD_RESET } from '../constants/cardConstants';
+import Loader from '../components/Loader';
+import AlertMessage from '../components/AlertMessage';
 
 const initialState = {
   cardNumber: '#### #### #### ####',
@@ -17,6 +19,8 @@ const initialState = {
 
 const AddCardScreen = (props) => {
   const [state, setState] = useState(initialState);
+  const [authCode, setAuthCode] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
   const [currentFocusedElm, setCurrentFocusedElm] = useState(null);
 
   const { history } = props;
@@ -26,7 +30,7 @@ const AddCardScreen = (props) => {
   const { userInfo } = userLogin;
 
   const cardAdd = useSelector((state) => state.cardAdd);
-  const { success, loading } = cardAdd;
+  const { success, loading, error } = cardAdd;
 
   useEffect(() => {
     if (success) {
@@ -95,38 +99,67 @@ const AddCardScreen = (props) => {
       expiryMonth: parseInt(state.cardMonth),
       expiryYear: parseInt(state.cardYear),
     };
+    if (authCode) {
+      data.authCode = authCode;
+    }
     // console.log(data);
     dispatch(addCard(data));
+    setShowAlert(true);
+  };
+
+  const handleAuthCodeChange = (e) => {
+    setAuthCode(e.target.value);
+  };
+
+  const onCloseHandler = () => {
+    setShowAlert(false);
   };
 
   return (
-    <div className="wrapper">
-      <CreditCardForm
-        cardMonth={state.cardMonth}
-        cardYear={state.cardYear}
-        onUpdateState={updateStateValues}
-        cardNumberRef={formFieldsRefObj.cardNumber}
-        cardHolderRef={formFieldsRefObj.cardHolder}
-        cardDateRef={formFieldsRefObj.cardDate}
-        onCardInputFocus={onCardFormInputFocus}
-        onCardInputBlur={onCardInputBlur}
-        onCardSubmit={onCardSubmit}
-      >
-        <CreditCard3
-          cardNumber={state.cardNumber}
-          cardHolder={state.cardHolder}
-          cardMonth={state.cardMonth}
-          cardYear={state.cardYear}
-          cardCvv={state.cardCvv}
-          isCardFlipped={state.isCardFlipped}
-          currentFocusedElm={currentFocusedElm}
-          onCardElementClick={focusFormFieldByKey}
-          cardNumberRef={cardElementsRef.cardNumber}
-          cardHolderRef={cardElementsRef.cardHolder}
-          cardDateRef={cardElementsRef.cardDate}
-        ></CreditCard3>
-      </CreditCardForm>
-    </div>
+    <>
+      {loading ? (
+        <Loader color={'#333940'} />
+      ) : (
+        <>
+          {showAlert && error && (
+            <div className="col-md-6 col-12" style={{ margin: 'auto' }}>
+              <AlertMessage variant="danger" onCloseHandler={onCloseHandler}>
+                {error}
+              </AlertMessage>
+            </div>
+          )}
+          <div className="wrapper">
+            <CreditCardForm
+              cardMonth={state.cardMonth}
+              cardYear={state.cardYear}
+              onUpdateState={updateStateValues}
+              cardNumberRef={formFieldsRefObj.cardNumber}
+              cardHolderRef={formFieldsRefObj.cardHolder}
+              cardDateRef={formFieldsRefObj.cardDate}
+              onCardInputFocus={onCardFormInputFocus}
+              onCardInputBlur={onCardInputBlur}
+              onCardSubmit={onCardSubmit}
+              authCode={authCode}
+              handleAuthCodeChange={handleAuthCodeChange}
+            >
+              <CreditCard3
+                cardNumber={state.cardNumber}
+                cardHolder={state.cardHolder}
+                cardMonth={state.cardMonth}
+                cardYear={state.cardYear}
+                cardCvv={state.cardCvv}
+                isCardFlipped={state.isCardFlipped}
+                currentFocusedElm={currentFocusedElm}
+                onCardElementClick={focusFormFieldByKey}
+                cardNumberRef={cardElementsRef.cardNumber}
+                cardHolderRef={cardElementsRef.cardHolder}
+                cardDateRef={cardElementsRef.cardDate}
+              ></CreditCard3>
+            </CreditCardForm>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 

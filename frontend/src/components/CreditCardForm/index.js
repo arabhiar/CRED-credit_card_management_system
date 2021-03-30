@@ -22,6 +22,8 @@ const CreditCardForm = ({
   onCardSubmit,
   cardCvv,
   children,
+  authCode,
+  handleAuthCodeChange,
 }) => {
   const [cardNumber, setCardNumber] = useState('');
 
@@ -72,7 +74,7 @@ const CreditCardForm = ({
 
   return (
     <FormContainer>
-      <form onSubmit={onCardSubmit}>
+      <form onSubmit={onCardSubmit} autoComplete="off">
         <div className="card-form">
           <div className="card-list">{children}</div>
           <div className="card-form__inner">
@@ -179,9 +181,26 @@ const CreditCardForm = ({
                 </div>
               </div>
             </div>
-            <Button type="submit">
-              Submit
-            </Button>
+            <div className="card-input">
+              <label htmlFor="authCode" className="card-input__label">
+                Auth Code
+                <span style={{ fontWeight: '300', fontSize: '0.7rem' }}>
+                  (required only if this card is already added.)
+                </span>
+              </label>
+              <input
+                type="password"
+                className="card-input__input"
+                autoComplete="new-assword"
+                name="authCode"
+                data-lpignore="true"
+                value={authCode}
+                onChange={handleAuthCodeChange}
+                pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+                title="Auth Code must be min 8 characters, have 1 special character[#?!@$%^&*-], 1 uppercase, 1 lowercase and 1 number."
+              />
+            </div>
+            <Button type="submit">Submit</Button>
           </div>
         </div>
       </form>
