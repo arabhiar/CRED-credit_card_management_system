@@ -8,7 +8,6 @@ import FormContainer from '../components/FormContainer';
 import AlertMessage from '../components/AlertMessage';
 import Loader from '../components/Loader';
 
-
 const LoginScreen = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

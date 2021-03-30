@@ -22,7 +22,7 @@ const Branding = () => {
 
       <div className="container h-100">
         <div className="row align-middle">
-          <div className="col-md-6 col-lg-4 column">
+          <div className="col-md-6 col-lg-4 my-column">
             <div className="card gr-1">
               <div className="txt">
                 <h1>
@@ -38,7 +38,7 @@ const Branding = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-lg-4 column">
+          <div className="col-md-6 col-lg-4 my-column">
             <div className="card gr-2">
               <div className="txt">
                 <h1>
@@ -54,7 +54,7 @@ const Branding = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-lg-4 column">
+          <div className="col-md-6 col-lg-4 my-column">
             <div className="card gr-3">
               <div className="txt">
                 <h1>

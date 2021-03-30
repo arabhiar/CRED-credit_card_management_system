@@ -41,7 +41,8 @@ $(function () {
   }, 2200);
 });
 
-const CreditCard2 = () => {
+const CreditCard2 = (props) => {
+  const { card } = props;
   return (
     <div className="floating">
       <div className="thickness"></div>
@@ -52,12 +53,16 @@ const CreditCard2 = () => {
         <div className="logo svg"></div>
         <div className="paywave svg"></div>
         <div className="chips svg"></div>
-        <div className="card_no text">1234-5678-9012-3456</div>
+        <div className="card_no text">{card.cardNumber}</div>
         <div className="valid text">
           VALID <br /> THUR
         </div>
-        <div className="valid_date text">12/20</div>
-        <div className="holder text">JOHN DOE</div>
+        <div className="valid_date text">
+          {card.expiryMonth
+            ? `${card.expiryMonth.toString()}/${card.expiryYear.toString()}`
+            : ''}
+        </div>
+        <div className="holder text">{card.cardOwnerName}</div>
         <div className="mastercard_icon svg"></div>
       </div>
     </div>

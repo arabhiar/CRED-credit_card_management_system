@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
 import './App.scss';
@@ -13,6 +13,8 @@ import AddCardScreen from './screens/AddCardScreen';
 import LoginScreen2 from './screens/LoginScreen2';
 import RegisterScreen2 from './screens/RegisterScreen2';
 import ProfileScreen2 from './screens/ProfileScreen2';
+import CardScreen from './screens/CardScreen';
+import StatementScreen from './screens/StatementScreen';
 
 function App() {
   return (
@@ -22,10 +24,16 @@ function App() {
         <Container>
           <Route path="/login" component={LoginScreen2} />
           <Route path="/register" component={RegisterScreen2} />
-          <Route path="/profile" component={ProfileScreen2} exact/>
+          <Route path="/profile" component={ProfileScreen2} exact />
+          <Route path="/cards/add/new" component={AddCardScreen} exact />
+          <Route
+            path="/cards/:id/statements/:year/:month"
+            component={StatementScreen}
+            exact
+          />
+          <Route path="/cards/:id" component={CardScreen} exact />
           <Route path="/" component={HomeScreen} exact />
-          <Route path="/credit" component={CreditCard2} exact />
-          <Route path="/add" component={AddCardScreen} />
+          <Route path="/credit" component={CardScreen} exact />
         </Container>
       </main>
       <Footer />

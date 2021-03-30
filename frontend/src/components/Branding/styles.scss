@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Oswald:300,400,500,700');
-
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800');
 @import url('http://fonts.cdnfonts.com/css/gilroy-bold');
 
 $gr-1: linear-gradient(170deg, #f40076 0%, #df98fa 100%);
@@ -35,7 +35,7 @@ $gr-3: linear-gradient(170deg, #d6ff7f 0%, #00b3cc 100%);
   transform: translateY(-50%);
 }
 
-.column {
+.my-column {
   margin-top: 3rem;
   padding-left: 3rem;
   &:hover {
@@ -56,7 +56,7 @@ $gr-3: linear-gradient(170deg, #d6ff7f 0%, #00b3cc 100%);
     }
   }
 }
-.card {
+.h-100 .card {
   min-height: 170px;
   margin: 0;
   padding: 1.7rem 1.2rem;

@@ -9,7 +9,15 @@ import {
   userUpdateProfileReducer,
 } from './reducers/userReducers';
 
-import { cardAddReducer, cardListReducer } from './reducers/cardReducer';
+import {
+  cardAddReducer,
+  cardListReducer,
+  cardDetailsReducer,
+} from './reducers/cardReducer';
+
+import { statementDetailsReducer } from './reducers/statementReducer';
+
+import { payReducer } from './reducers/paymentReducer';
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
@@ -18,6 +26,9 @@ const reducer = combineReducers({
   userUpdateProfile: userUpdateProfileReducer,
   cardAdd: cardAddReducer,
   cardList: cardListReducer,
+  cardDetails: cardDetailsReducer,
+  statementDetails: statementDetailsReducer,
+  pay: payReducer,
 });
 
 const userInfoFromLocalStorage = localStorage.getItem('userInfo')
