@@ -175,24 +175,46 @@ module.exports = {
         res.send(data);
     },
     getCardById: async(req, res) => {
-        const card = await db.Card.findOne({
+
+        // finding all the profile associated with that card
+        const profileAssociated = await db.Profile_Card.findAll({
             where: {
-                id: req.params.card_id,
+                CardId: req.params.card_id,
             },
-        }).catch((err) => {
-            res.statusCode = 500;
-            throw new Error(err);
-        })
-        const originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
-        const outstandingAmount = await calculateOutstandingAmount(card.id);
-        const cardInfo = {
-            cardOwnerName: card.cardOwnerName,
-            cardNumber: originalCardNumber,
-            expiryMonth: card.expiryMonth,
-            expiryYear: card.expiryYear,
-            outstandingAmount: outstandingAmount,
+            attributes: ['ProfileId']
+        });
+
+        for(const profile of profileAssociated) {
+            const profileUser = await db.Profile.findOne({ 
+                where: { 
+                    id: profile.ProfileId
+                },
+                attributes: ['UserId']
+            });
+            if(profileUser.UserId === req.user.id) {
+                const card = await db.Card.findOne({
+                    where: {
+                        id: req.params.card_id,
+                    },
+                }).catch((err) => {
+                    res.statusCode = 500;
+                    throw new Error(err);
+                })
+                const originalCardNumber = await encryptDecrypt.decrypt(card.cardNumber);
+                const outstandingAmount = await calculateOutstandingAmount(card.id);
+                const cardInfo = {
+                    cardOwnerName: card.cardOwnerName,
+                    cardNumber: originalCardNumber,
+                    expiryMonth: card.expiryMonth,
+                    expiryYear: card.expiryYear,
+                    outstandingAmount: outstandingAmount,
+                }
+                res.status(200).send(cardInfo); 
+                return;
+            }
         }
-        res.send(cardInfo); 
+        res.statusCode = 500;
+        throw new Error('Wrong card id or you\'re not authorised !');
     },
     payBill: async(req, res) => {
 
