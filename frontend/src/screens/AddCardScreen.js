@@ -98,6 +98,7 @@ const AddCardScreen = (props) => {
       cardNumber: removeSpaces(state.cardNumber),
       expiryMonth: parseInt(state.cardMonth),
       expiryYear: parseInt(state.cardYear),
+      cvv: parseInt(state.cardCvv)
     };
     if (authCode) {
       data.authCode = authCode;

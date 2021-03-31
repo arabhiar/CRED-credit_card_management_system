@@ -44,14 +44,14 @@ const TransactionTable = (props) => {
               <th>Vendor</th>
               <th>Category</th>
               <th>Date</th>
-              <th>Amount(₹)</th>
+              <th>Outstanding Amount(₹)</th>
             </tr>
           </thead>
           <tbody>
             {transactions.map((transaction, index) => {
               return (
                 <tr>
-                  <td>{transaction.user}</td>
+                  <td>{transaction.userAssociated}</td>
                   <td>{transaction.vendor}</td>
                   <td>{transaction.category}</td>
                   <td className="text-muted">

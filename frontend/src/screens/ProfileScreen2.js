@@ -163,7 +163,8 @@ const ProfileScreen2 = (props) => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             isInvalid={!!errors.name}
-                            readOnly={readOnly}
+                            // readOnly={readOnly}
+                            disabled={readOnly}
                           />
                           {errors.name && touched.name && (
                             <Form.Control.Feedback type="invalid">
@@ -186,7 +187,8 @@ const ProfileScreen2 = (props) => {
                               onChange={handleChange}
                               onBlur={handleBlur}
                               isInvalid={!!errors.authCode}
-                              readOnly={readOnly}
+                              // readOnly={readOnly}
+                              disabled={readOnly}
                             />
                             <InputGroup.Append>
                               <InputGroup.Text>
@@ -221,7 +223,8 @@ const ProfileScreen2 = (props) => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             isInvalid={!!errors.email}
-                            readOnly
+                            // readOnly
+                            disabled
                           />
                           {errors.email && touched.email && (
                             <Form.Control.Feedback type="invalid">
