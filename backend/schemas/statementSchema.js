@@ -5,8 +5,7 @@ const statementSchema = (req, res, next) => {
         amount: Joi.number().precision(2).required(),
         vendor: Joi.string().required(),
         category: Joi.string().required(),
-        credDeb: Joi.boolean().required()
-        
+        credDeb: Joi.boolean().required(),
     })
     verifySchema(req, next, schema);
 }

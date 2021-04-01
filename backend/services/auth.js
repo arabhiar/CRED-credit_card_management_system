@@ -1,6 +1,7 @@
 const db = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const encryptDecrypt = require('./encryptDecrypt');
 
 //helper functions
 
@@ -60,11 +61,22 @@ module.exports = {
       where: {
         UserId: userId,
       },
-    }).catch((err) => {
-      res.statusCode = 500;
-      throw new Error(err);
-    });
-    res.status(200).json(userProfile);
+      attributes: ['id', 'email', 'authCode', 'UserId']
+    })
+      .then(async(data) => {
+        const duplicate = {...data.dataValues};
+        if(data.authCode === null) {
+          res.status(200).json(data);
+        }
+        else {
+          duplicate.authCode = await encryptDecrypt.decrypt(data.authCode);
+          res.status(200).json(duplicate);
+        }
+      })
+      .catch((err) => {
+        res.statusCode = 500;
+        throw new Error(err);
+      });
   },
   editProfile: async (req, res) => {
     // getting profile using req.user.id
@@ -88,7 +100,7 @@ module.exports = {
         }
 
         if (req.body.authCode) {
-          duplicate.authCode = await bcrypt.hash(req.body.authCode, 10);
+          duplicate.authCode = await encryptDecrypt.encrypt(req.body.authCode);
         }
         await data
           .update(duplicate)

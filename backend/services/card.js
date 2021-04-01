@@ -1,6 +1,5 @@
 const db = require('../models');
 const encryptDecrypt = require('./encryptDecrypt');
-const bcrypt = require('bcryptjs');
 const calculateOutstandingAmount = require('./calculateOutstandingAmount');
 const { Op } = require('sequelize');
 
@@ -82,7 +81,8 @@ module.exports = {
                     for(const profile of card.Profiles) {
 
                         // if the authCode is same of the input user and some other user,
-                        if(await bcrypt.compare(req.body.authCode, profile.authCode)) {
+                        const decryptedAuthCode = await encryptDecrypt.decrypt(profile.authCode);
+                        if(decryptedAuthCode === req.body.authCode) {
 
                             // we have to also now verify name, and expiry
                             if(card.expiryMonth === req.body.expiryMonth && card.expiryYear === req.body.expiryYear && card.cardOwnerName === req.body.cardOwnerName.toUpperCase()) {
