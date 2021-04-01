@@ -276,7 +276,7 @@ module.exports = {
         }
     },
 
-    getAllstatements: async(req, res) => {
+    getStatementsYearMonth: async(req, res) => {
         
         // cardNumber, year, month
         let month = req.params.month;
@@ -333,11 +333,77 @@ module.exports = {
                         },
                     },
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
-                }).catch((err) => {
-                    res.statusCode = 500;
-                    throw new Error(err);
-                })
-                res.status(200).send(statements);
+                })  
+                    .then((data) => {
+                        res.status(200).send(data);
+                    })
+                    .catch((err) => {
+                        res.statusCode = 500;
+                        throw new Error(err);
+                    })
+                return;
+            }
+        }
+    },
+
+    getAllstatements: async(req, res) => {
+        // getting the profile associated with the current loggedIn user
+        const profileAssociated = await db.Profile.findOne({
+            where: {
+                UserId: req.user.id
+            }
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        const allProfileCardIds = await db.Profile_Card.findAll({
+            where: {
+                ProfileId: profileAssociated.id
+            },
+            attributes: ['CardId'] // getting all the cardIds associated with the current loggedIn user profile
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        // we will now check for every card associated with current LoggedIn user,
+        for(const profileCardId of allProfileCardIds) {
+            const currentCard = await db.Card.findOne({
+                where: {
+                    id: profileCardId.CardId,
+                },
+                attributes: ['cardNumber']
+            }).catch((err) => {
+                res.statusCode(500);
+                throw new Error(err);
+            })
+
+            const currentCardNumber = await encryptDecrypt.decrypt(currentCard.cardNumber);
+
+            // if we get the same card number associated with the currentLoggedIn user.
+            if(currentCardNumber === req.params.id) {
+                const statements = await db.Transaction.findAll({
+                    where: {
+                        CardId: profileCardId.CardId,
+                    },
+                    attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
+                })  
+                    .then((data) => {
+                        data.sort(function(a, b) {
+                            if(a.transactionDateTime > b.transactionDateTime)
+                                return 1;
+                            if(a.transactionDateTime < b.transactionDateTime)
+                                return -1;
+
+                            return 0;
+                        });
+                        res.status(200).send(data);
+                    })
+                    .catch((err) => {
+                        res.statusCode = 500;
+                        throw new Error(err);
+                    })
                 return;
             }
         }
@@ -396,9 +462,9 @@ module.exports = {
                 for(const currentStatement of req.body) {
                     await db.Transaction.create({
                         amount: currentStatement.amount,
-                        vendor: currentStatement.vendor,
+                        vendor: currentStatement.vendor.toUpperCase(),
                         credDeb: currentStatement.credDeb,
-                        category: currentStatement.category,
+                        category: currentStatement.category.toUpperCase(),
                         cardNumber: currentCard.cardNumber,
                         transactionDateTime: startingDate,
                         CardId: profileCardId.CardId,
