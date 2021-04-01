@@ -343,6 +343,12 @@ module.exports = {
         }
     },
     postStatement: async(req, res) => {
+
+        if(req.body.length === 0) {
+            res.statusCode = 500;
+            throw new Error('Please enter atleast one statement');
+        }
+
         // cardNumber, year, month
         let month = req.params.month;
         let year = req.params.year;
@@ -387,19 +393,26 @@ module.exports = {
 
             // if we get the same card number associated with the currentLoggedIn user.
             if(currentCardNumber === req.params.id) {
-                const statement = await db.Transaction.create({
-                    amount: req.body.amount,
-                    vendor: req.body.vendor,
-                    credDeb: req.body.credDeb,
-                    category: req.body.category,
-                    cardNumber: currentCard.cardNumber,
-                    transactionDateTime: startingDate,
-                    CardId: profileCardId.CardId,
-                    userAssociated: req.user.email,
-                })
-                res.status(200).send(statement);
+                for(const currentStatement of req.body) {
+                    await db.Transaction.create({
+                        amount: currentStatement.amount,
+                        vendor: currentStatement.vendor,
+                        credDeb: currentStatement.credDeb,
+                        category: currentStatement.category,
+                        cardNumber: currentCard.cardNumber,
+                        transactionDateTime: startingDate,
+                        CardId: profileCardId.CardId,
+                        userAssociated: req.user.email,
+                    }).catch((err) => {
+                        res.statusCode(500);
+                        throw new Error(err);
+                    })
+                }
+                res.status(200).send("Paid !");
                 return;
             }
         }
+        res.statusCode = 500;
+        throw new Error(`Invalid card details`);
     }
 }
