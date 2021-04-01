@@ -415,6 +415,8 @@ module.exports = {
             throw new Error('Please enter atleast one statement');
         }
 
+        const currentCardNumber = req.params.id;
+
         // cardNumber, year, month
         let month = req.params.month;
         let year = req.params.year;
@@ -424,51 +426,27 @@ module.exports = {
         
         const startingDate = new Date(year, month, 2);
 
-        // getting the profile associated with the current loggedIn user
-        const profileAssociated = await db.Profile.findOne({
-            where: {
-                UserId: req.user.id
-            }
-        }).catch((err) => {
-            res.statusCode = 500;
-            throw new Error(err);
-        })
 
-        const allProfileCardIds = await db.Profile_Card.findAll({
+        // finding the cardId associated with the particular cardNumber
+        const allCards = await db.Card.findAll({
             where: {
-                ProfileId: profileAssociated.id
+
             },
-            attributes: ['CardId'] // getting all the cardIds associated with the current loggedIn user profile
-        }).catch((err) => {
-            res.statusCode = 500;
-            throw new Error(err);
-        })
-
-        for(const profileCardId of allProfileCardIds) {
-            const currentCard = await db.Card.findOne({
-                where: {
-                    id: profileCardId.CardId,
-                },
-                attributes: ['cardNumber']
-            }).catch((err) => {
-                res.statusCode(500);
-                throw new Error(err);
-            })
-
-            const currentCardNumber = await encryptDecrypt.decrypt(currentCard.cardNumber);
-
-            // if we get the same card number associated with the currentLoggedIn user.
-            if(currentCardNumber === req.params.id) {
+            attributes: ['id', 'cardNumber']
+        });
+        for(const card of allCards) {
+            const decryptedCard = await encryptDecrypt.decrypt(card.cardNumber);
+            if(currentCardNumber === decryptedCard) {
                 for(const currentStatement of req.body) {
                     await db.Transaction.create({
                         amount: currentStatement.amount,
                         vendor: currentStatement.vendor.toUpperCase(),
                         credDeb: currentStatement.credDeb,
                         category: currentStatement.category.toUpperCase(),
-                        cardNumber: currentCard.cardNumber,
+                        cardNumber: card.cardNumber,
                         transactionDateTime: startingDate,
-                        CardId: profileCardId.CardId,
-                        userAssociated: req.user.email,
+                        CardId: card.id,
+                        userAssociated: 'NA',
                     }).catch((err) => {
                         res.statusCode(500);
                         throw new Error(err);

@@ -19,6 +19,6 @@ router.get('/:id/statements', [verifyToken(), luhnValidation], cardController.ge
 
 router.get('/:id/statements/:year/:month', [verifyToken(), luhnValidation], cardController.getStatementsYearMonth);
 
-router.post('/:id/statements/:year/:month', [verifyToken(), luhnValidation, statementSchema], cardController.postStatement);
+router.post('/:id/statements/:year/:month', [luhnValidation, statementSchema], cardController.postStatement);
 
 module.exports = router;
