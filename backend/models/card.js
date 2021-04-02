@@ -40,6 +40,15 @@ module.exports = (sequelize, DataTypes) => {
                 isInt: true,
             }
         },
+        cvv: {
+            allowNull: false,
+            type: DataTypes.INTEGER,
+            validate: {
+                min:100,
+                max:9999,
+                isInt: true,
+            }
+        }
     });
 
     Card.associate = (models) => {

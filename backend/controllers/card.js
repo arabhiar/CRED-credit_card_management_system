@@ -21,6 +21,10 @@ module.exports = {
         cardService.getAllstatements(req, res)
             .catch(next);
     },
+    getStatementsYearMonth: async(req, res, next) => {
+        cardService.getStatementsYearMonth(req, res)
+            .catch(next);
+    },
     postStatement: async(req, res, next) => {
         cardService.postStatement(req, res)
             .catch(next);

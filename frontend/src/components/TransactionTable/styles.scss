@@ -56,24 +56,6 @@ tbody tr td.text-muted {
   font-family: 'Lato', sans-serif;
 }
 
-.pagination .page-item .page-link {
-  background-color: #444;
-  color: #fff;
-  padding: 0.3rem 0.75rem;
-  border: none;
-  border-radius: 0;
-}
-
-.pagination .page-item .page-link span {
-  font-size: 16px;
-}
-
-.pagination .page-item.disabled .page-link {
-  background-color: #333;
-  color: #eee;
-  cursor: crosshair;
-}
-
 @media (min-width: 768px) and (max-width: 991px) {
   .wrapper {
     margin: auto;

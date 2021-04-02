@@ -7,6 +7,7 @@ const cardSchema = (req, res, next) => {
         expiryMonth: Joi.number().integer().min(1).max(12).required(),
         expiryYear: Joi.number().integer().min(2021).max(3000).required(),
         authCode: Joi.string(),
+        cvv: Joi.number().integer().min(100).max(9999).required(),
     })
     verifySchema(req, next, schema);
 }

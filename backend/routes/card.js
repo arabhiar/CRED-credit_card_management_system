@@ -15,8 +15,10 @@ router.get('/:card_id', verifyToken(), cardController.getCardById);
 
 router.post('/:id/pay', [ verifyToken(), billSchema, luhnValidation ], cardController.payBill);
 
-router.get('/:id/statements/:year/:month', [verifyToken(), luhnValidation], cardController.getAllStatements);
+router.get('/:id/statements', [verifyToken(), luhnValidation], cardController.getAllStatements);
 
-router.post('/:id/statements/:year/:month', [verifyToken(), luhnValidation, statementSchema], cardController.postStatement);
+router.get('/:id/statements/:year/:month', [verifyToken(), luhnValidation], cardController.getStatementsYearMonth);
+
+router.post('/:id/statements/:year/:month', [luhnValidation, statementSchema], cardController.postStatement);
 
 module.exports = router;

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getStatementsByMonth } from '../actions/statementActions';
 import { getCardById } from '../actions/cardActions';
 import TransactionTable from '../components/TransactionTable';
-import Loader from 'react-spinners/PuffLoader';
+import Loader from '../components/Loader';
+import Paginate from '../components/Paginate';
 
 const StatementScreen = (props) => {
   const { history, match } = props;
@@ -14,6 +15,7 @@ const StatementScreen = (props) => {
   const cardId = match.params.id;
   const year = match.params.year;
   const month = match.params.month;
+  const pageNumber = match.params.pageNumber || 1;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -26,19 +28,33 @@ const StatementScreen = (props) => {
     statements,
     loading: loadingStatements,
     error: errorStatements,
+    pages,
+    page,
   } = statementDetails;
 
   useEffect(() => {
     if (!userInfo) {
       history.push('/login');
     } else {
-      if (!card) {
+      if (!card.cardNumber) {
         dispatch(getCardById(cardId));
       } else {
-        dispatch(getStatementsByMonth(card.cardNumber, year, month));
+        dispatch(
+          getStatementsByMonth(card.cardNumber, year, month, pageNumber)
+        );
       }
     }
-  }, [history, userInfo, card, cardId, dispatch, year, month]);
+  }, [history, userInfo, card, cardId, dispatch, year, month, pageNumber]);
+
+  // const paginate = (pageNumber) => {
+  //   setCurrentPage(pageNumber);
+  // };
+
+  const utils = {
+    cardId,
+    year,
+    month,
+  };
 
   return (
     <>
@@ -46,7 +62,10 @@ const StatementScreen = (props) => {
       {loadingStatements ? (
         <Loader color={'#333940'} />
       ) : (
-        <TransactionTable transactions={statements} />
+        <>
+          <TransactionTable transactions={statements} />
+          <Paginate pages={pages} page={page} utils={utils} />
+        </>
       )}
     </>
   );

@@ -27,10 +27,19 @@ const TransactionTable = (props) => {
     );
   };
 
+  const capitalizeWord = (word) => {
+    if (word !== 'NA') {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }
+    return word;
+  };
+
   return (
     <div className="transaction-table">
       {transactions.length === 0 ? (
-        <p style={{fontSize: '1.0rem', fontWeight: '400', marginTop: '2rem'}}>No transactions are done in this month</p>
+        <p style={{ fontSize: '1.0rem', fontWeight: '400', marginTop: '2rem' }}>
+          No transactions are done in this month
+        </p>
       ) : (
         <Table
           hover
@@ -44,16 +53,16 @@ const TransactionTable = (props) => {
               <th>Vendor</th>
               <th>Category</th>
               <th>Date</th>
-              <th>Amount(₹)</th>
+              <th>Outstanding Amount(₹)</th>
             </tr>
           </thead>
           <tbody>
             {transactions.map((transaction, index) => {
               return (
-                <tr>
-                  <td>{transaction.user}</td>
-                  <td>{transaction.vendor}</td>
-                  <td>{transaction.category}</td>
+                <tr key={index}>
+                  <td>{transaction.userAssociated}</td>
+                  <td>{capitalizeWord(transaction.vendor)}</td>
+                  <td>{capitalizeWord(transaction.category)}</td>
                   <td className="text-muted">
                     {parseDate(transaction.transactionDateTime)}
                   </td>
