@@ -61,7 +61,7 @@ module.exports = {
       where: {
         UserId: userId,
       },
-      attributes: ['id', 'email', 'authCode', 'UserId']
+      attributes: ['id', 'email', 'authCode', 'UserId', 'name']
     })
       .then(async(data) => {
         const duplicate = {...data.dataValues};

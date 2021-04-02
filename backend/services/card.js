@@ -335,6 +335,13 @@ module.exports = {
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
                 })  
                     .then((data) => {
+                        data.sort(function(a, b) {
+                            if(a.transactionDateTime > b.transactionDateTime)
+                                return 1;
+                            if(a.transactionDateTime < b.transactionDateTime)
+                                return -1;
+                            return 0;
+                        });
                         res.status(200).send(data);
                     })
                     .catch((err) => {
@@ -395,7 +402,6 @@ module.exports = {
                                 return 1;
                             if(a.transactionDateTime < b.transactionDateTime)
                                 return -1;
-
                             return 0;
                         });
                         res.status(200).send(data);
