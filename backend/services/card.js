@@ -342,7 +342,15 @@ module.exports = {
                                 return -1;
                             return 0;
                         });
-                        res.status(200).send(data);
+                        // Pagination
+                        const perPage = 2;
+                        const page = Number(req.query.pageNumber) || 1;
+                        const count = data.length;
+                        const pages = Math.ceil(count / perPage);
+                        const indexOfLastStatement = page * perPage;
+                        const indexOfFirstStatement = indexOfLastStatement - perPage;
+                        const currentStatements = data.slice(indexOfFirstStatement, indexOfLastStatement);
+                        res.status(200).json({data: currentStatements, pages, page});
                     })
                     .catch((err) => {
                         res.statusCode = 500;
