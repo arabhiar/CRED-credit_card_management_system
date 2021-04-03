@@ -21,4 +21,8 @@ router.get('/:id/statements/:year/:month', [verifyToken(), luhnValidation], card
 
 router.post('/:id/statements/:year/:month', [luhnValidation, statementSchema], cardController.postStatement);
 
+router.get('/:id/smartStatement', [verifyToken(), luhnValidation], cardController.getSmartStatementData);
+
+router.get('/:id/smartStatement/:year/:month', [verifyToken(), luhnValidation], cardController.getSmartStatementYearMonth);
+
 module.exports = router;
