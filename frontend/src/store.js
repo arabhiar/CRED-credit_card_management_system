@@ -18,6 +18,7 @@ import {
 import {
   statementDetailsReducer,
   recentStatementsReducer,
+  smartStatementsByMonthReducer,
 } from './reducers/statementReducer';
 
 import { payReducer } from './reducers/paymentReducer';
@@ -31,6 +32,7 @@ const reducer = combineReducers({
   cardList: cardListReducer,
   cardDetails: cardDetailsReducer,
   statementDetails: statementDetailsReducer,
+  smartStatementsByMonth: smartStatementsByMonthReducer,
   recentStatements: recentStatementsReducer,
   pay: payReducer,
 });

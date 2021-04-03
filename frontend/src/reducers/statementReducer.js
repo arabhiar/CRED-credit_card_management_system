@@ -7,6 +7,10 @@ import {
   STATEMENT_RECENT_5_REQUEST,
   STATEMENT_RECENT_5_RESET,
   STATEMENT_RECENT_5_SUCCESS,
+  SMART_STATEMENT_BY_MONTH_REQUEST,
+  SMART_STATEMENT_BY_MONTH_SUCCESS,
+  SMART_STATEMENT_BY_MONTH_FAIL,
+  SMART_STATEMENT_BY_MONTH_RESET,
 } from '../constants/statementConstants';
 
 export const statementDetailsReducer = (state = { statements: [] }, action) => {
@@ -38,6 +42,21 @@ export const recentStatementsReducer = (state = { statements: [] }, action) => {
     case STATEMENT_RECENT_5_FAIL:
       return { loading: false, error: action.payload };
     case STATEMENT_RECENT_5_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const smartStatementsByMonthReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SMART_STATEMENT_BY_MONTH_REQUEST:
+      return { loading: true };
+    case SMART_STATEMENT_BY_MONTH_SUCCESS:
+      return { loading: false, stat: action.payload };
+    case SMART_STATEMENT_BY_MONTH_FAIL:
+      return { loading: false, error: action.payload };
+    case SMART_STATEMENT_BY_MONTH_RESET:
       return {};
     default:
       return state;

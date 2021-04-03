@@ -32,16 +32,16 @@ function App() {
             component={StatementScreen}
             exact
           />
-          {/* <Route
+          <Route
             path="/cards/:id/smartstatements/:year/:month"
             component={SmartStatementScreen}
             exact
-          /> */}
-          <Route
+          />
+          {/* <Route
             path="/smartstatements"
             component={SmartStatementScreen}
             exact
-          />
+          /> */}
           <Route
             path="/cards/:id/statements/:year/:month/:pageNumber"
             component={StatementScreen}

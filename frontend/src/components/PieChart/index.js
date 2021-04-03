@@ -2,14 +2,14 @@ import React from 'react';
 import { Pie } from 'react-chartjs-2';
 
 const PieChart = (props) => {
-  const { color } = props;
+  const { labels, color, label, value } = props;
 
   const data = {
-    labels: ['Amazon', 'Flipkart', 'Netmeds', 'Swiggy', 'Zomato', 'Myntra'],
+    labels: labels,
     datasets: [
       {
-        label: '# of Votes',
-        data: [1200.0, 1900.0, 2700.0, 250.0, 520.0, 3000.0],
+        label: label,
+        data: value,
         backgroundColor: color.background,
         borderColor: color.border,
         borderWidth: 1,
@@ -18,14 +18,32 @@ const PieChart = (props) => {
   };
 
   return (
-    <div style={{ width: '800px' }}>
-      <Pie
-        data={data}
-        height={400}
-        width={800}
-        options={{ maintainAspectRatio: false }}
-      />
-    </div>
+    <>
+      {labels.length === 0 ? (
+        <div className="text-center">
+          <p
+            style={{
+              fontSize: '1rem',
+              fontWeight: '400',
+              marginTop: '1.5rem',
+            }}
+          >
+            No data available to show.
+          </p>
+        </div>
+      ) : (
+        <div
+        //  style={{ width: '800px' }}
+        >
+          <Pie
+            data={data}
+            height={400}
+            // width={800}
+            options={{ maintainAspectRatio: false }}
+          />
+        </div>
+      )}
+    </>
   );
 };
 

@@ -1,5 +1,8 @@
 import axios from 'axios';
 import {
+  SMART_STATEMENT_BY_MONTH_FAIL,
+  SMART_STATEMENT_BY_MONTH_REQUEST,
+  SMART_STATEMENT_BY_MONTH_SUCCESS,
   STATEMENT_BY_DATE_FAIL,
   STATEMENT_BY_DATE_REQUEST,
   STATEMENT_BY_DATE_SUCCESS,
@@ -43,7 +46,10 @@ export const getStatementsByMonth = (
   }
 };
 
-export const getRecentStatements = (cardNo, count=3) => async (dispatch, getState) => {
+export const getRecentStatements = (cardNo, count = 3) => async (
+  dispatch,
+  getState
+) => {
   try {
     dispatch({ type: STATEMENT_RECENT_5_REQUEST });
     const {
@@ -66,6 +72,39 @@ export const getRecentStatements = (cardNo, count=3) => async (dispatch, getStat
   } catch (err) {
     dispatch({
       type: STATEMENT_RECENT_5_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const getSmartStatementsByMonth = (cardNo, year, month) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: SMART_STATEMENT_BY_MONTH_REQUEST });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(
+      `/api/cards/${cardNo}/smartStatement/${year}/${month}`,
+      config
+    );
+    dispatch({ type: SMART_STATEMENT_BY_MONTH_SUCCESS, payload: data });
+  } catch (err) {
+    dispatch({
+      type: SMART_STATEMENT_BY_MONTH_FAIL,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

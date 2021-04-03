@@ -115,6 +115,7 @@ const CardScreen = (props) => {
               bg="dark"
               text="white"
               className="mx-auto text-center responsive-card"
+              style={{ marginTop: '5rem' }}
             >
               <Card.Body>
                 <Card.Title> Outstanding Amount </Card.Title>
@@ -155,9 +156,9 @@ const CardScreen = (props) => {
                   <TransactionTable transactions={statements} />
                 </>
               )}
-              <h2 style={{ marginTop: '2rem' }}>Statement By Month</h2>
-              <Row style={{ width: '70%', margin: '1rem auto' }}>
-                <Col md={4}>
+              <h2 style={{ marginTop: '4rem' }}>Statement By Month</h2>
+              <Row style={{ margin: '1rem auto' }}>
+                <Col md={3}>
                   <Dropdown
                     value={year}
                     handleChange={(e) => setYear(e.target.value)}
@@ -165,7 +166,7 @@ const CardScreen = (props) => {
                     data={getYearsArr()}
                   />
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                   <Dropdown
                     value={month}
                     handleChange={(e) => setMonth(e.target.value)}
@@ -174,7 +175,7 @@ const CardScreen = (props) => {
                   />
                 </Col>
 
-                <Col md={4}>
+                <Col md={3}>
                   <LinkContainer
                     to={`/cards/${cardId}/statements/${parseInt(
                       year
@@ -185,6 +186,20 @@ const CardScreen = (props) => {
                       disabled={!month || !year ? true : false}
                     >
                       Get
+                    </Button>
+                  </LinkContainer>
+                </Col>
+                <Col md={3}>
+                  <LinkContainer
+                    to={`/cards/${cardId}/smartstatements/${parseInt(
+                      year
+                    )}/${parseInt(month)}`}
+                  >
+                    <Button
+                      className="btn btn-outline-info"
+                      disabled={!month || !year ? true : false}
+                    >
+                      Smart
                     </Button>
                   </LinkContainer>
                 </Col>
