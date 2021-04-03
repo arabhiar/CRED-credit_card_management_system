@@ -15,6 +15,7 @@ import RegisterScreen2 from './screens/RegisterScreen2';
 import ProfileScreen2 from './screens/ProfileScreen2';
 import CardScreen from './screens/CardScreen';
 import StatementScreen from './screens/StatementScreen';
+import SmartStatementScreen from './screens/SmartStatementScreen';
 
 function App() {
   return (
@@ -31,6 +32,16 @@ function App() {
             component={StatementScreen}
             exact
           />
+          <Route
+            path="/cards/:id/smartstatements/:year/:month"
+            component={SmartStatementScreen}
+            exact
+          />
+          {/* <Route
+            path="/smartstatements"
+            component={SmartStatementScreen}
+            exact
+          /> */}
           <Route
             path="/cards/:id/statements/:year/:month/:pageNumber"
             component={StatementScreen}

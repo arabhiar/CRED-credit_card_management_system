@@ -7,15 +7,12 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useSelector, useDispatch } from 'react-redux';
 import Loader from 'react-spinners/PuffLoader';
 import { getCardById } from '../actions/cardActions';
+import { getRecentStatements } from '../actions/statementActions';
 import AlertMessage from '../components/AlertMessage';
 import CreditCard2 from '../components/CreditCard2';
 import ModalForm from '../components/ModalForm';
 import Dropdown from '../components/Dropdown';
-
-const monthsArr = Array.from({ length: 12 }, (x, i) => {
-  const month = i + 1;
-  return month <= 9 ? '0' + month : month;
-});
+import TransactionTable from '../components/TransactionTable';
 
 const getMonthsArr = (year) => {
   let d = new Date();
@@ -51,9 +48,11 @@ const CardScreen = (props) => {
 
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
-  const [date, setDate] = useState(0);
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
+
+  const recentStatements = useSelector((state) => state.recentStatements);
+  const { statements, loading: loadingStatements } = recentStatements;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -70,9 +69,13 @@ const CardScreen = (props) => {
       history.push('/login');
     } else {
       // console.log('Dispatch');
-      dispatch(getCardById(cardId));
+      if (card.cardNumber) {
+        dispatch(getRecentStatements(card.cardNumber, 3));
+      } else {
+        dispatch(getCardById(cardId));
+      }
     }
-  }, [userInfo, history, cardId, dispatch]);
+  }, [userInfo, history, cardId, dispatch, card]);
 
   const parseAmount = (amount) => {
     if (amount || amount === 0) {
@@ -92,10 +95,6 @@ const CardScreen = (props) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  const getStatementClickHandler = () => {
-    console.log('Year:', year);
-    console.log('Month:', month);
-  };
 
   return (
     <>
@@ -105,29 +104,22 @@ const CardScreen = (props) => {
         <AlertMessage variant="danger">{error}</AlertMessage>
       ) : (
         <Row>
-          <Col md={5}>
+          <Col className="responsive-col-1">
             <h2 className="text-center" style={{ marginTop: '2rem' }}>
               Card Details
             </h2>
-            <div style={{ marginTop: '2rem' }}>
+            <div className="checking" style={{ marginTop: '2rem' }}>
               <CreditCard2 card={card} />
             </div>
             <Card
               bg="dark"
               text="white"
-              style={{
-                width: '18rem',
-                alignSelf: 'center',
-                marginTop: '3rem',
-                borderRadius: '20px',
-                // margin: '0 auto',
-                // float: 'none',
-              }}
-              className="mx-auto text-center"
+              className="mx-auto text-center responsive-card"
+              style={{ marginTop: '5rem' }}
             >
               <Card.Body>
                 <Card.Title> Outstanding Amount </Card.Title>
-                <Card.Text style={{ fontSize: '2.8rem' }}>
+                <Card.Text className="responsive-text">
                   {`₹ ${parseAmount(card.outstandingAmount)}`}
                 </Card.Text>
                 <Button
@@ -151,12 +143,22 @@ const CardScreen = (props) => {
               </Card.Body>
             </Card>
           </Col>
-          <Col md={7}>
-            <div className="text-center">
+          <Col className="responsive-col-2">
+            <div
+              style={{ marginLeft: '1rem', marginRight: '1rem' }}
+              className="text-center"
+            >
               <h2 style={{ marginTop: '2rem' }}>Recent Transactions</h2>
-              <h2 style={{ marginTop: '2rem' }}>Statement By Month</h2>
-              <Row style={{ width: '70%', margin: '1rem auto' }}>
-                <Col md={4}>
+              {loadingStatements ? (
+                <Loader color={'#333940'} />
+              ) : (
+                <>
+                  <TransactionTable transactions={statements} />
+                </>
+              )}
+              <h2 style={{ marginTop: '4rem' }}>Statement By Month</h2>
+              <Row style={{ margin: '1rem auto' }}>
+                <Col md={3}>
                   <Dropdown
                     value={year}
                     handleChange={(e) => setYear(e.target.value)}
@@ -164,7 +166,7 @@ const CardScreen = (props) => {
                     data={getYearsArr()}
                   />
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                   <Dropdown
                     value={month}
                     handleChange={(e) => setMonth(e.target.value)}
@@ -173,7 +175,7 @@ const CardScreen = (props) => {
                   />
                 </Col>
 
-                <Col md={4}>
+                <Col md={3}>
                   <LinkContainer
                     to={`/cards/${cardId}/statements/${parseInt(
                       year
@@ -184,6 +186,20 @@ const CardScreen = (props) => {
                       disabled={!month || !year ? true : false}
                     >
                       Get
+                    </Button>
+                  </LinkContainer>
+                </Col>
+                <Col md={3}>
+                  <LinkContainer
+                    to={`/cards/${cardId}/smartstatements/${parseInt(
+                      year
+                    )}/${parseInt(month)}`}
+                  >
+                    <Button
+                      className="btn btn-outline-info"
+                      disabled={!month || !year ? true : false}
+                    >
+                      Smart
                     </Button>
                   </LinkContainer>
                 </Col>

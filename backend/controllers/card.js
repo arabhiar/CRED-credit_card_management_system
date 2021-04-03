@@ -28,5 +28,13 @@ module.exports = {
     postStatement: async(req, res, next) => {
         cardService.postStatement(req, res)
             .catch(next);
-    }
+    },
+    getSmartStatementData: async(req, res, next) => {
+        cardService.getSmartStatementData(req, res)
+            .catch(next);
+    },
+    getSmartStatementYearMonth: async(req, res, next) => {
+        cardService.getSmartStatementYearMonth(req, res)
+            .catch(next);
+    },
 }

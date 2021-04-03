@@ -472,5 +472,253 @@ module.exports = {
         }
         res.statusCode = 500;
         throw new Error(`Invalid card details`);
+    },
+    getSmartStatementData: async(req, res) => {
+
+        // getting the profile associated with the current loggedIn user
+        const profileAssociated = await db.Profile.findOne({
+            where: {
+                UserId: req.user.id
+            }
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        const allProfileCardIds = await db.Profile_Card.findAll({
+            where: {
+                ProfileId: profileAssociated.id
+            },
+            attributes: ['CardId'] // getting all the cardIds associated with the current loggedIn user profile
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        // we will now check for every card associated with current LoggedIn user,
+        for(const profileCardId of allProfileCardIds) {
+            const currentCard = await db.Card.findOne({
+                where: {
+                    id: profileCardId.CardId,
+                },
+                attributes: ['cardNumber']
+            }).catch((err) => {
+                res.statusCode(500);
+                throw new Error(err);
+            })
+
+            const currentCardNumber = await encryptDecrypt.decrypt(currentCard.cardNumber);
+
+            // if we get the same card number associated with the currentLoggedIn user.
+            if(currentCardNumber === req.params.id) {
+                await db.Transaction.findAll({
+                    where: {
+                        CardId: profileCardId.CardId,
+                    },
+                    attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
+                })
+                    .then((allStatements) => {
+                        const allCategories = new Set();
+                        const allVendors = new Set();
+
+                        for(const statement of allStatements) {
+                            allCategories.add(statement.category);
+                            allVendors.add(statement.vendor);
+                        }
+
+
+                        let labels = [];
+                        let data = [];
+                        for(let currCategory of allCategories) {
+                            labels.push(currCategory);
+                            let totalAmount = 0;
+                            for(let statement of allStatements) {
+                                if(statement.category === currCategory) {
+                                    totalAmount += parseFloat(statement.amount);
+                                }
+                            }
+                            data.push(totalAmount);
+                        }
+
+                        
+                        const categories = {
+                            labels: [...labels],
+                            data: [...data]
+                        };
+
+                        labels = [];
+                        data = [];
+
+                        for(let currVendor of allVendors) {
+                            labels.push(currVendor);
+                            let totalAmount = 0;
+                            for(let statement of allStatements) {
+                                if(statement.vendor === currVendor) {
+                                    totalAmount += parseFloat(statement.amount);
+                                }
+                            }
+                            data.push(totalAmount);
+                        }
+
+                        const vendors = {
+                            labels: [...labels],
+                            data: [...data]
+                        }
+
+                        const smartStatement = {
+                            categories: categories,
+                            vendors: vendors
+                        }
+
+                        res.send(smartStatement);
+
+
+                    })
+                    .catch((err) => {
+                        res.statusCode = 500;
+                        throw new Error(err);
+                    })
+                return;
+            }
+        }
+    },
+    getSmartStatementYearMonth: async(req, res) => {
+        // cardNumber, year, month
+        let month = req.params.month;
+        let year = req.params.year;
+        
+        const endingDate = new Date(year, month);
+
+        month = parseInt(month) - 1;
+
+        const startingDate = new Date(year, month);
+
+        // getting the profile associated with the current loggedIn user
+        const profileAssociated = await db.Profile.findOne({
+            where: {
+                UserId: req.user.id
+            }
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        const allProfileCardIds = await db.Profile_Card.findAll({
+            where: {
+                ProfileId: profileAssociated.id
+            },
+            attributes: ['CardId'] // getting all the cardIds associated with the current loggedIn user profile
+        }).catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
+
+        // we will now check for every card associated with current LoggedIn user,
+        for(const profileCardId of allProfileCardIds) {
+            const currentCard = await db.Card.findOne({
+                where: {
+                    id: profileCardId.CardId,
+                },
+                attributes: ['cardNumber']
+            }).catch((err) => {
+                res.statusCode(500);
+                throw new Error(err);
+            })
+
+            const currentCardNumber = await encryptDecrypt.decrypt(currentCard.cardNumber);
+
+            // if we get the same card number associated with the currentLoggedIn user.
+            if(currentCardNumber === req.params.id) {
+                const statements = await db.Transaction.findAll({
+                    where: {
+                        CardId: profileCardId.CardId,
+                        transactionDateTime: { // we are now fetching all the statements between the starting and endingDate
+                            [Op.gt]: startingDate,
+                            [Op.lte]: endingDate,
+                        },
+                    },
+                    attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
+                })  
+                    .then((allStatements) => {
+                        const allCategories = new Set();
+                        const allVendors = new Set();
+
+                        for(const statement of allStatements) {
+                            allCategories.add(statement.category);
+                            allVendors.add(statement.vendor);
+                        }
+
+
+                        let labels = [];
+                        let data = [];
+                        let count = [];
+                        for(let currCategory of allCategories) {
+                            labels.push(currCategory);
+                            let totalAmount = 0;
+                            let currentCount = 0;
+                            for(let statement of allStatements) {
+                                if(statement.category === currCategory) {
+                                    totalAmount += parseFloat(statement.amount);
+                                    currentCount += 1;
+                                }
+                            }
+                            data.push(totalAmount);
+                            count.push(currentCount);
+                        }
+                        
+                        const categories = {
+                            labels: [...labels],
+                            data: [...data]
+                        };
+
+                        const categoriesCount = {
+                            labels: [...labels],
+                            data: [...count]
+                        }
+
+                        labels = [];
+                        data = [];
+                        count = [];
+
+                        for(let currVendor of allVendors) {
+                            labels.push(currVendor);
+                            let totalAmount = 0;
+                            let currentCount = 0;
+                            for(let statement of allStatements) {
+                                if(statement.vendor === currVendor) {
+                                    totalAmount += parseFloat(statement.amount);
+                                    currentCount += 1;
+                                }
+                            }
+                            data.push(totalAmount);
+                            count.push(currentCount);
+                        }
+
+                        const vendors = {
+                            labels: [...labels],
+                            data: [...data]
+                        }
+
+                        const vendorsCount = {
+                            labels: [...labels],
+                            data: [...count]
+                        }
+
+                        const smartStatement = {
+                            categories: categories,
+                            vendors: vendors,
+                            categoriesCount: categoriesCount,
+                            vendorsCount: vendorsCount
+                        }
+                        res.send(smartStatement);
+                    })
+                    .catch((err) => {
+                        res.statusCode = 500;
+                        throw new Error(err);
+                    })
+                return;
+            }
+        }
+
     }
 }

@@ -262,3 +262,41 @@ i.authcode-show:hover {
   cursor: pointer;
 }
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// style for CardScreen
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+.responsive-card {
+  width: 18rem;
+  align-self: center;
+  margin-top: 3rem;
+  border-radius: 20px;
+}
+
+.responsive-text {
+  font-size: 2.8rem;
+}
+
+// .checking {
+//   background-color: red;
+// }
+
+@media (max-width: 1200px) {
+  .checking {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 440px) {
+  .responsive-card {
+    width: 60%;
+    align-self: center;
+    margin-top: 2rem;
+    border-radius: 20px;
+  }
+  .responsive-text {
+    font-size: 1.8rem;
+  }
+}
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------
