@@ -673,7 +673,7 @@ module.exports = {
 
                         const categoriesCount = {
                             labels: [...labels],
-                            count: [...count]
+                            data: [...count]
                         }
 
                         labels = [];
@@ -701,7 +701,7 @@ module.exports = {
 
                         const vendorsCount = {
                             labels: [...labels],
-                            count: [...count]
+                            data: [...count]
                         }
 
                         const smartStatement = {
