@@ -15,7 +15,10 @@ import {
   cardDetailsReducer,
 } from './reducers/cardReducer';
 
-import { statementDetailsReducer } from './reducers/statementReducer';
+import {
+  statementDetailsReducer,
+  recentStatementsReducer,
+} from './reducers/statementReducer';
 
 import { payReducer } from './reducers/paymentReducer';
 
@@ -28,6 +31,7 @@ const reducer = combineReducers({
   cardList: cardListReducer,
   cardDetails: cardDetailsReducer,
   statementDetails: statementDetailsReducer,
+  recentStatements: recentStatementsReducer,
   pay: payReducer,
 });
 
