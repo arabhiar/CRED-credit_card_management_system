@@ -651,35 +651,47 @@ module.exports = {
 
                         let labels = [];
                         let data = [];
+                        let count = [];
                         for(let currCategory of allCategories) {
                             labels.push(currCategory);
                             let totalAmount = 0;
+                            let currentCount = 0;
                             for(let statement of allStatements) {
                                 if(statement.category === currCategory) {
                                     totalAmount += parseFloat(statement.amount);
+                                    currentCount += 1;
                                 }
                             }
                             data.push(totalAmount);
+                            count.push(currentCount);
                         }
-
                         
                         const categories = {
                             labels: [...labels],
                             data: [...data]
                         };
 
+                        const categoriesCount = {
+                            labels: [...labels],
+                            count: [...count]
+                        }
+
                         labels = [];
                         data = [];
+                        count = [];
 
                         for(let currVendor of allVendors) {
                             labels.push(currVendor);
                             let totalAmount = 0;
+                            let currentCount = 0;
                             for(let statement of allStatements) {
                                 if(statement.vendor === currVendor) {
                                     totalAmount += parseFloat(statement.amount);
+                                    currentCount += 1;
                                 }
                             }
                             data.push(totalAmount);
+                            count.push(currentCount);
                         }
 
                         const vendors = {
@@ -687,11 +699,17 @@ module.exports = {
                             data: [...data]
                         }
 
-                        const smartStatement = {
-                            categories: categories,
-                            vendors: vendors
+                        const vendorsCount = {
+                            labels: [...labels],
+                            count: [...count]
                         }
 
+                        const smartStatement = {
+                            categories: categories,
+                            vendors: vendors,
+                            categoriesCount: categoriesCount,
+                            vendorsCount: vendorsCount
+                        }
                         res.send(smartStatement);
                     })
                     .catch((err) => {
