@@ -5,15 +5,17 @@ import {
   STATEMENT_BY_DATE_SUCCESS,
 } from '../constants/statementConstants';
 
-export const statementDetailsReducer = (
-  state = { statements: [] },
-  action
-) => {
+export const statementDetailsReducer = (state = { statements: [] }, action) => {
   switch (action.type) {
     case STATEMENT_BY_DATE_REQUEST:
       return { loading: true };
     case STATEMENT_BY_DATE_SUCCESS:
-      return { loading: false, statements: action.payload };
+      return {
+        loading: false,
+        statements: action.payload.data,
+        pages: action.payload.pages,
+        page: action.payload.page,
+      };
     case STATEMENT_BY_DATE_FAIL:
       return { loading: false, error: action.payload };
     case STATEMENT_BY_DATE_RESET:

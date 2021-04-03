@@ -5,10 +5,12 @@ import {
   STATEMENT_BY_DATE_SUCCESS,
 } from '../constants/statementConstants';
 
-export const getStatementsByMonth = (cardNo, year, month) => async (
-  dispatch,
-  getState
-) => {
+export const getStatementsByMonth = (
+  cardNo,
+  year,
+  month,
+  pageNumber = ''
+) => async (dispatch, getState) => {
   try {
     dispatch({ type: STATEMENT_BY_DATE_REQUEST });
     const {
@@ -23,7 +25,7 @@ export const getStatementsByMonth = (cardNo, year, month) => async (
     };
 
     const { data } = await axios.get(
-      `/api/cards/${cardNo}/statements/${year}/${month}`,
+      `/api/cards/${cardNo}/statements/${year}/${month}?pageNumber=${pageNumber}`,
       config
     );
     dispatch({ type: STATEMENT_BY_DATE_SUCCESS, payload: data });

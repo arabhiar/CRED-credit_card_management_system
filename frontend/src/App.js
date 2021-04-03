@@ -31,6 +31,10 @@ function App() {
             component={StatementScreen}
             exact
           />
+          <Route
+            path="/cards/:id/statements/:year/:month/:pageNumber"
+            component={StatementScreen}
+          />
           <Route path="/cards/:id" component={CardScreen} exact />
           <Route path="/" component={HomeScreen} exact />
           <Route path="/credit" component={CardScreen} exact />
