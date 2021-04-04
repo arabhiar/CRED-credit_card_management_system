@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Button, Card, Form } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -13,6 +13,7 @@ import CreditCard2 from '../components/CreditCard2';
 import ModalForm from '../components/ModalForm';
 import Dropdown from '../components/Dropdown';
 import TransactionTable from '../components/TransactionTable';
+import { CARD_DETAILS_RESET } from '../constants/cardConstants';
 
 const getMonthsArr = (year) => {
   let d = new Date();
@@ -68,10 +69,12 @@ const CardScreen = (props) => {
       // console.log('Not Logged In');
       history.push('/login');
     } else {
-      // console.log('Dispatch');
+      console.log('Else statement:', card);
       if (card.cardNumber) {
+        console.log('Dispatch recent statement');
         dispatch(getRecentStatements(card.cardNumber, 3));
       } else {
+        // dispatch({ type: CARD_DETAILS_RESET });
         dispatch(getCardById(cardId));
       }
     }

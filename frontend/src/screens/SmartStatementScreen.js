@@ -104,29 +104,31 @@ const SmartStatementScreen = (props) => {
                   >
                     Spending on basis of category.
                   </p>
-                  <OverlayTrigger
-                    placement="left"
-                    overlay={
-                      <Tooltip id={`tooltip-left`}>
-                        {categoryPie ? 'Bar Chart' : 'Pie Chart'}
-                      </Tooltip>
-                    }
-                  >
-                    <Button
-                      style={{ marginBottom: '1rem' }}
-                      onClick={() => setCategoryPie(!categoryPie)}
-                      size="sm"
-                      variant="outline-info"
+                  {stat.categories.labels && stat.categories.labels.length > 0 && (
+                    <OverlayTrigger
+                      placement="left"
+                      overlay={
+                        <Tooltip id={`tooltip-left`}>
+                          {categoryPie ? 'Bar Chart' : 'Pie Chart'}
+                        </Tooltip>
+                      }
                     >
-                      <i
-                        className={
-                          categoryPie
-                            ? 'far fa-chart-bar fa-lg'
-                            : 'fas fa-chart-pie fa-lg'
-                        }
-                      ></i>
-                    </Button>
-                  </OverlayTrigger>
+                      <Button
+                        style={{ marginBottom: '1rem' }}
+                        onClick={() => setCategoryPie(!categoryPie)}
+                        size="sm"
+                        variant="outline-info"
+                      >
+                        <i
+                          className={
+                            categoryPie
+                              ? 'far fa-chart-bar fa-lg'
+                              : 'fas fa-chart-pie fa-lg'
+                          }
+                        ></i>
+                      </Button>
+                    </OverlayTrigger>
+                  )}
 
                   {categoryPie ? (
                     <PieChart
@@ -156,29 +158,31 @@ const SmartStatementScreen = (props) => {
                   >
                     Spending on basis of vendor.
                   </p>
-                  <OverlayTrigger
-                    placement="left"
-                    overlay={
-                      <Tooltip id={`tooltip-left`}>
-                        {vendorPie ? 'Bar Chart' : 'Pie Chart'}
-                      </Tooltip>
-                    }
-                  >
-                    <Button
-                      style={{ marginBottom: '1rem' }}
-                      onClick={() => setVendorPie(!vendorPie)}
-                      size="sm"
-                      variant="outline-info"
+                  {stat.vendors.labels && stat.vendors.labels.length > 0 && (
+                    <OverlayTrigger
+                      placement="left"
+                      overlay={
+                        <Tooltip id={`tooltip-left`}>
+                          {vendorPie ? 'Bar Chart' : 'Pie Chart'}
+                        </Tooltip>
+                      }
                     >
-                      <i
-                        className={
-                          vendorPie
-                            ? 'far fa-chart-bar fa-lg'
-                            : 'fas fa-chart-pie fa-lg'
-                        }
-                      ></i>
-                    </Button>
-                  </OverlayTrigger>
+                      <Button
+                        style={{ marginBottom: '1rem' }}
+                        onClick={() => setVendorPie(!vendorPie)}
+                        size="sm"
+                        variant="outline-info"
+                      >
+                        <i
+                          className={
+                            vendorPie
+                              ? 'far fa-chart-bar fa-lg'
+                              : 'fas fa-chart-pie fa-lg'
+                          }
+                        ></i>
+                      </Button>
+                    </OverlayTrigger>
+                  )}
 
                   {vendorPie ? (
                     <PieChart
@@ -210,29 +214,32 @@ const SmartStatementScreen = (props) => {
                   >
                     Count for each category.
                   </p>
-                  <OverlayTrigger
-                    placement="left"
-                    overlay={
-                      <Tooltip id={`tooltip-left`}>
-                        {categoryCountPie ? 'Bar Chart' : 'Pie Chart'}
-                      </Tooltip>
-                    }
-                  >
-                    <Button
-                      style={{ marginBottom: '1rem' }}
-                      onClick={() => setCategoryCountPie(!categoryCountPie)}
-                      size="sm"
-                      variant="outline-info"
-                    >
-                      <i
-                        className={
-                          categoryCountPie
-                            ? 'far fa-chart-bar fa-lg'
-                            : 'fas fa-chart-pie fa-lg'
+                  {stat.categoriesCount.labels &&
+                    stat.categoriesCount.labels.length > 0 && (
+                      <OverlayTrigger
+                        placement="left"
+                        overlay={
+                          <Tooltip id={`tooltip-left`}>
+                            {categoryCountPie ? 'Bar Chart' : 'Pie Chart'}
+                          </Tooltip>
                         }
-                      ></i>
-                    </Button>
-                  </OverlayTrigger>
+                      >
+                        <Button
+                          style={{ marginBottom: '1rem' }}
+                          onClick={() => setCategoryCountPie(!categoryCountPie)}
+                          size="sm"
+                          variant="outline-info"
+                        >
+                          <i
+                            className={
+                              categoryCountPie
+                                ? 'far fa-chart-bar fa-lg'
+                                : 'fas fa-chart-pie fa-lg'
+                            }
+                          ></i>
+                        </Button>
+                      </OverlayTrigger>
+                    )}
 
                   {categoryCountPie ? (
                     <PieChart
@@ -262,29 +269,32 @@ const SmartStatementScreen = (props) => {
                   >
                     Count for each vendor.
                   </p>
-                  <OverlayTrigger
-                    placement="left"
-                    overlay={
-                      <Tooltip id={`tooltip-left`}>
-                        {vendorCountPie ? 'Bar Chart' : 'Pie Chart'}
-                      </Tooltip>
-                    }
-                  >
-                    <Button
-                      style={{ marginBottom: '1rem' }}
-                      onClick={() => setVendorCountPie(!vendorCountPie)}
-                      size="sm"
-                      variant="outline-info"
-                    >
-                      <i
-                        className={
-                          vendorCountPie
-                            ? 'far fa-chart-bar fa-lg'
-                            : 'fas fa-chart-pie fa-lg'
+                  {stat.vendorsCount.labels &&
+                    stat.vendorsCount.labels.length > 0 && (
+                      <OverlayTrigger
+                        placement="left"
+                        overlay={
+                          <Tooltip id={`tooltip-left`}>
+                            {vendorCountPie ? 'Bar Chart' : 'Pie Chart'}
+                          </Tooltip>
                         }
-                      ></i>
-                    </Button>
-                  </OverlayTrigger>
+                      >
+                        <Button
+                          style={{ marginBottom: '1rem' }}
+                          onClick={() => setVendorCountPie(!vendorCountPie)}
+                          size="sm"
+                          variant="outline-info"
+                        >
+                          <i
+                            className={
+                              vendorCountPie
+                                ? 'far fa-chart-bar fa-lg'
+                                : 'fas fa-chart-pie fa-lg'
+                            }
+                          ></i>
+                        </Button>
+                      </OverlayTrigger>
+                    )}
 
                   {vendorCountPie ? (
                     <PieChart
