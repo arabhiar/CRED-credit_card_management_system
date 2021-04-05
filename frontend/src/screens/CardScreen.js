@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Button, Card, Form } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
 import { LinkContainer } from 'react-router-bootstrap';
-import 'react-datepicker/dist/react-datepicker.css';
 
 import { useSelector, useDispatch } from 'react-redux';
 import Loader from 'react-spinners/PuffLoader';
@@ -61,21 +59,14 @@ const CardScreen = (props) => {
   const cardDetails = useSelector((state) => state.cardDetails);
   const { card, error, loading } = cardDetails;
 
-  // console.log(userLogin);
-  // console.log(card);
-
   useEffect(() => {
     if (!userInfo) {
-      // console.log('Not Logged In');
       history.push('/login');
     } else {
-      console.log('Else statement:', card);
-      if (card.cardNumber) {
-        console.log('Dispatch recent statement');
-        dispatch(getRecentStatements(card.cardNumber, 3));
-      } else {
-        // dispatch({ type: CARD_DETAILS_RESET });
+      if (!card.cardNumber) {
         dispatch(getCardById(cardId));
+      } else {
+        dispatch(getRecentStatements(card.cardNumber, 3));
       }
     }
   }, [userInfo, history, cardId, dispatch, card]);
