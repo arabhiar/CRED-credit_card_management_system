@@ -18,6 +18,7 @@ import AlertMessage from '../components/AlertMessage';
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants';
 import Loader from 'react-spinners/PuffLoader';
 import { LinkContainer } from 'react-router-bootstrap';
+import { CARD_DETAILS_RESET } from '../constants/cardConstants';
 
 const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/g;
 
@@ -63,6 +64,7 @@ const ProfileScreen2 = (props) => {
     if (!userInfo) {
       history.push('/login');
     } else {
+      dispatch({ type: CARD_DETAILS_RESET });
       dispatch(listCards());
       if (!user.email || updateSuccess) {
         if (updateSuccess) {
@@ -265,7 +267,7 @@ const ProfileScreen2 = (props) => {
                 {errorCards}
               </AlertMessage>
             ) : (
-              <Table striped bordered hover responsive className="table-sm">
+              <Table striped bordered hover responsive className="table-sm table-dark">
                 <thead>
                   <tr>
                     <th>S.NO.</th>
@@ -285,7 +287,7 @@ const ProfileScreen2 = (props) => {
                         <td>{card.outstandingAmount}</td>
                         <td>
                           <LinkContainer to={`/cards/${card.id}`}>
-                            <Button className="btn-sm" variant="light">
+                            <Button className="btn-sm btn btn-outline-info" variant="light">
                               Details
                             </Button>
                           </LinkContainer>

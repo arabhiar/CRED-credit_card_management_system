@@ -49,7 +49,7 @@ export const cardDetailsReducer = (state = { card: {} }, action) => {
     case CARD_DETAILS_FAIL:
       return { loading: false, error: action.payload };
     case CARD_DETAILS_RESET:
-      return {};
+      return { card: {} };
     default:
       return state;
   }

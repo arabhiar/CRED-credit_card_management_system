@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Button, Card, Form } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
 import { LinkContainer } from 'react-router-bootstrap';
-import 'react-datepicker/dist/react-datepicker.css';
 
 import { useSelector, useDispatch } from 'react-redux';
 import Loader from 'react-spinners/PuffLoader';
@@ -13,6 +11,7 @@ import CreditCard2 from '../components/CreditCard2';
 import ModalForm from '../components/ModalForm';
 import Dropdown from '../components/Dropdown';
 import TransactionTable from '../components/TransactionTable';
+import { CARD_DETAILS_RESET } from '../constants/cardConstants';
 
 const getMonthsArr = (year) => {
   let d = new Date();
@@ -60,19 +59,14 @@ const CardScreen = (props) => {
   const cardDetails = useSelector((state) => state.cardDetails);
   const { card, error, loading } = cardDetails;
 
-  // console.log(userLogin);
-  // console.log(card);
-
   useEffect(() => {
     if (!userInfo) {
-      // console.log('Not Logged In');
       history.push('/login');
     } else {
-      // console.log('Dispatch');
-      if (card.cardNumber) {
-        dispatch(getRecentStatements(card.cardNumber, 3));
-      } else {
+      if (!card.cardNumber) {
         dispatch(getCardById(cardId));
+      } else {
+        dispatch(getRecentStatements(card.cardNumber, 3));
       }
     }
   }, [userInfo, history, cardId, dispatch, card]);
