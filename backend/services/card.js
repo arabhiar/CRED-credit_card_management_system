@@ -308,6 +308,7 @@ module.exports = {
             throw new Error(err);
         })
 
+        
         // we will now check for every card associated with current LoggedIn user,
         for(const profileCardId of allProfileCardIds) {
             const currentCard = await db.Card.findOne({
