@@ -16,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "deep-email-validator": "^0.1.18",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
@@ -24,9 +25,12 @@
     "luhn-js": "^1.1.2",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
+    "node-cron": "^3.0.0",
+    "nodemailer": "^6.5.0",
     "sequelize": "^6.5.0",
     "sequelize-cli": "^6.2.0",
     "sequelize-mysql-timestamp": "^1.4.0",
+    "twilio": "^3.59.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

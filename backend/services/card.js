@@ -81,6 +81,7 @@ module.exports = {
                     for(const profile of card.Profiles) {
 
                         // if the authCode is same of the input user and some other user,
+                        if(profile.authCode === null) continue;
                         const decryptedAuthCode = await encryptDecrypt.decrypt(profile.authCode);
                         if(decryptedAuthCode === req.body.authCode) {
 
@@ -98,7 +99,11 @@ module.exports = {
                                         id: card.id,
                                     }
                                 });
+                                
                                 cardAssociated.addProfile(profileAssociated);
+                                const outstandingAmount = await calculateOutstandingAmount(cardAssociated.id);
+                                cardAssociated.outstandingAmount = outstandingAmount;
+
                                 res.status(200).json(cardAssociated);
                                 cardAdded = true;
                                 return;
@@ -308,6 +313,7 @@ module.exports = {
             throw new Error(err);
         })
 
+        
         // we will now check for every card associated with current LoggedIn user,
         for(const profileCardId of allProfileCardIds) {
             const currentCard = await db.Card.findOne({
@@ -333,29 +339,29 @@ module.exports = {
                         },
                     },
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
-                })  
-                    .then((data) => {
-                        data.sort(function(a, b) {
-                            if(a.transactionDateTime > b.transactionDateTime)
-                                return 1;
-                            if(a.transactionDateTime < b.transactionDateTime)
-                                return -1;
-                            return 0;
-                        });
-                        // Pagination
-                        const perPage = 10;
-                        const page = Number(req.query.pageNumber) || 1;
-                        const count = data.length;
-                        const pages = Math.ceil(count / perPage);
-                        const indexOfLastStatement = page * perPage;
-                        const indexOfFirstStatement = indexOfLastStatement - perPage;
-                        const currentStatements = data.slice(indexOfFirstStatement, indexOfLastStatement);
-                        res.status(200).json({data: currentStatements, pages, page});
-                    })
-                    .catch((err) => {
-                        res.statusCode = 500;
-                        throw new Error(err);
-                    })
+
+                }).catch((err) => {
+                    res.statusCode = 500;
+                    throw new Error(err);
+                })
+            
+                statements.sort(function(a, b) {
+                    if(a.transactionDateTime > b.transactionDateTime)
+                        return 1;
+                    if(a.transactionDateTime < b.transactionDateTime)
+                        return -1;
+                    return 0;
+                });
+                // Pagination
+                const perPage = 2;
+                const page = Number(req.query.pageNumber) || 1;
+                const count = statements.length;
+                const pages = Math.ceil(count / perPage);
+                const indexOfLastStatement = page * perPage;
+                const indexOfFirstStatement = indexOfLastStatement - perPage;
+                const currentStatements = statements.slice(indexOfFirstStatement, indexOfLastStatement);
+                res.status(200).json({data: currentStatements, pages, page});
+
                 return;
             }
         }
@@ -404,20 +410,18 @@ module.exports = {
                     },
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
                 })  
-                    .then((data) => {
-                        data.sort(function(a, b) {
-                            if(a.transactionDateTime > b.transactionDateTime)
-                                return 1;
-                            if(a.transactionDateTime < b.transactionDateTime)
-                                return -1;
-                            return 0;
-                        });
-                        res.status(200).send(data);
-                    })
-                    .catch((err) => {
-                        res.statusCode = 500;
-                        throw new Error(err);
-                    })
+                .catch((err) => {
+                    res.statusCode = 500;
+                    throw new Error(err);
+                })
+                statements.sort(function(a, b) {
+                    if(a.transactionDateTime > b.transactionDateTime)
+                        return 1;
+                    if(a.transactionDateTime < b.transactionDateTime)
+                        return -1;
+                    return 0;
+                });
+                res.status(200).send(statements);
                 return;
             }
         }
@@ -466,7 +470,7 @@ module.exports = {
                         throw new Error(err);
                     })
                 }
-                res.status(200).send("Paid !");
+                res.status(200).send("Statement Posted !");
                 return;
             }
         }
@@ -511,73 +515,70 @@ module.exports = {
 
             // if we get the same card number associated with the currentLoggedIn user.
             if(currentCardNumber === req.params.id) {
-                await db.Transaction.findAll({
+                const allStatements = await db.Transaction.findAll({
                     where: {
                         CardId: profileCardId.CardId,
                     },
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
                 })
-                    .then((allStatements) => {
-                        const allCategories = new Set();
-                        const allVendors = new Set();
+                .catch((err) => {
+                    res.statusCode = 500;
+                    throw new Error(err);
+                })
+                    
+                const allCategories = new Set();
+                const allVendors = new Set();
 
-                        for(const statement of allStatements) {
-                            allCategories.add(statement.category);
-                            allVendors.add(statement.vendor);
+                for(const statement of allStatements) {
+                    allCategories.add(statement.category);
+                    allVendors.add(statement.vendor);
+                }
+
+
+                let labels = [];
+                let data = [];
+                for(let currCategory of allCategories) {
+                    labels.push(currCategory);
+                    let totalAmount = 0;
+                    for(let statement of allStatements) {
+                        if(statement.category === currCategory) {
+                            totalAmount += parseFloat(statement.amount);
                         }
+                    }
+                    data.push(totalAmount);
+                }
 
+                
+                const categories = {
+                    labels: [...labels],
+                    data: [...data]
+                };
 
-                        let labels = [];
-                        let data = [];
-                        for(let currCategory of allCategories) {
-                            labels.push(currCategory);
-                            let totalAmount = 0;
-                            for(let statement of allStatements) {
-                                if(statement.category === currCategory) {
-                                    totalAmount += parseFloat(statement.amount);
-                                }
-                            }
-                            data.push(totalAmount);
+                labels = [];
+                data = [];
+
+                for(let currVendor of allVendors) {
+                    labels.push(currVendor);
+                    let totalAmount = 0;
+                    for(let statement of allStatements) {
+                        if(statement.vendor === currVendor) {
+                            totalAmount += parseFloat(statement.amount);
                         }
+                    }
+                    data.push(totalAmount);
+                }
 
-                        
-                        const categories = {
-                            labels: [...labels],
-                            data: [...data]
-                        };
+                const vendors = {
+                    labels: [...labels],
+                    data: [...data]
+                }
 
-                        labels = [];
-                        data = [];
+                const smartStatement = {
+                    categories: categories,
+                    vendors: vendors
+                }
 
-                        for(let currVendor of allVendors) {
-                            labels.push(currVendor);
-                            let totalAmount = 0;
-                            for(let statement of allStatements) {
-                                if(statement.vendor === currVendor) {
-                                    totalAmount += parseFloat(statement.amount);
-                                }
-                            }
-                            data.push(totalAmount);
-                        }
-
-                        const vendors = {
-                            labels: [...labels],
-                            data: [...data]
-                        }
-
-                        const smartStatement = {
-                            categories: categories,
-                            vendors: vendors
-                        }
-
-                        res.send(smartStatement);
-
-
-                    })
-                    .catch((err) => {
-                        res.statusCode = 500;
-                        throw new Error(err);
-                    })
+                res.send(smartStatement);
                 return;
             }
         }
@@ -629,7 +630,7 @@ module.exports = {
 
             // if we get the same card number associated with the currentLoggedIn user.
             if(currentCardNumber === req.params.id) {
-                const statements = await db.Transaction.findAll({
+                const allStatements = await db.Transaction.findAll({
                     where: {
                         CardId: profileCardId.CardId,
                         transactionDateTime: { // we are now fetching all the statements between the starting and endingDate
@@ -639,83 +640,81 @@ module.exports = {
                     },
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
                 })  
-                    .then((allStatements) => {
-                        const allCategories = new Set();
-                        const allVendors = new Set();
-
-                        for(const statement of allStatements) {
-                            allCategories.add(statement.category);
-                            allVendors.add(statement.vendor);
-                        }
-
-
-                        let labels = [];
-                        let data = [];
-                        let count = [];
-                        for(let currCategory of allCategories) {
-                            labels.push(currCategory);
-                            let totalAmount = 0;
-                            let currentCount = 0;
-                            for(let statement of allStatements) {
-                                if(statement.category === currCategory) {
-                                    totalAmount += parseFloat(statement.amount);
-                                    currentCount += 1;
-                                }
-                            }
-                            data.push(totalAmount);
-                            count.push(currentCount);
-                        }
-                        
-                        const categories = {
-                            labels: [...labels],
-                            data: [...data]
-                        };
-
-                        const categoriesCount = {
-                            labels: [...labels],
-                            data: [...count]
-                        }
-
-                        labels = [];
-                        data = [];
-                        count = [];
-
-                        for(let currVendor of allVendors) {
-                            labels.push(currVendor);
-                            let totalAmount = 0;
-                            let currentCount = 0;
-                            for(let statement of allStatements) {
-                                if(statement.vendor === currVendor) {
-                                    totalAmount += parseFloat(statement.amount);
-                                    currentCount += 1;
-                                }
-                            }
-                            data.push(totalAmount);
-                            count.push(currentCount);
-                        }
-
-                        const vendors = {
-                            labels: [...labels],
-                            data: [...data]
-                        }
-
-                        const vendorsCount = {
-                            labels: [...labels],
-                            data: [...count]
-                        }
-
-                        const smartStatement = {
-                            categories: categories,
-                            vendors: vendors,
-                            categoriesCount: categoriesCount,
-                            vendorsCount: vendorsCount
-                        }
-                        res.send(smartStatement);
-                    })
                     .catch((err) => {
                         res.statusCode = 500;
                         throw new Error(err);
                     })
+                const allCategories = new Set();
+                const allVendors = new Set();
+
+                for(const statement of allStatements) {
+                    allCategories.add(statement.category);
+                    allVendors.add(statement.vendor);
+                }
+
+
+                let labels = [];
+                let data = [];
+                let count = [];
+                for(let currCategory of allCategories) {
+                    labels.push(currCategory);
+                    let totalAmount = 0;
+                    let currentCount = 0;
+                    for(let statement of allStatements) {
+                        if(statement.category === currCategory) {
+                            totalAmount += parseFloat(statement.amount);
+                            currentCount += 1;
+                        }
+                    }
+                    data.push(totalAmount);
+                    count.push(currentCount);
+                }
+                
+                const categories = {
+                    labels: [...labels],
+                    data: [...data]
+                };
+
+                const categoriesCount = {
+                    labels: [...labels],
+                    data: [...count]
+                }
+
+                labels = [];
+                data = [];
+                count = [];
+
+                for(let currVendor of allVendors) {
+                    labels.push(currVendor);
+                    let totalAmount = 0;
+                    let currentCount = 0;
+                    for(let statement of allStatements) {
+                        if(statement.vendor === currVendor) {
+                            totalAmount += parseFloat(statement.amount);
+                            currentCount += 1;
+                        }
+                    }
+                    data.push(totalAmount);
+                    count.push(currentCount);
+                }
+
+                const vendors = {
+                    labels: [...labels],
+                    data: [...data]
+                }
+
+                const vendorsCount = {
+                    labels: [...labels],
+                    data: [...count]
+                }
+
+                const smartStatement = {
+                    categories: categories,
+                    vendors: vendors,
+                    categoriesCount: categoriesCount,
+                    vendorsCount: vendorsCount
+                }
+                res.send(smartStatement);
                 return;
             }
         }
