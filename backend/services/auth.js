@@ -2,6 +2,7 @@ const db = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const encryptDecrypt = require('./encryptDecrypt');
+const emailValidator = require('deep-email-validator');
 
 //helper functions
 
@@ -10,21 +11,33 @@ const omitHash = (user) => {
   return userwithouthash;
 };
 
+const isValidEmail = async(email) => {
+  return emailValidator.validate(email);
+}
+
 module.exports = {
   login: async (params, res) => {
     const { email, password } = params;
-    const user = await db.User.scope('withPassword').findOne({
-      where: { email },
-    });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      res.statusCode = 401;
-      throw new Error('Username or password is incorrect');
+
+    const {valid, reason, validators} = await isValidEmail(email);
+    if(valid) {
+      const user = await db.User.scope('withPassword').findOne({
+        where: { email },
+      });
+      if (!user || !(await bcrypt.compare(password, user.password))) {
+        res.statusCode = 401;
+        throw new Error('Username or password is incorrect');
+      }
+      // authentication succesful
+      const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
+        expiresIn: '7d',
+      });
+      res.json({ ...omitHash(user.get()), token });
     }
-    // authentication succesful
-    const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
-      expiresIn: '7d',
-    });
-    res.json({ ...omitHash(user.get()), token });
+    else {
+      res.statusCode = 400;
+      throw new Error('Please provide a valid email address !');
+    }
   },
 
   signup: async (params, res) => {
@@ -34,24 +47,32 @@ module.exports = {
       throw new Error(`email "${params.email}" is already registered!`);
     }
 
-    // hash password
-    if (params.password) {
-      params.password = await bcrypt.hash(params.password, 10);
+    const {valid, reason, validators} = await isValidEmail(params.email);
+
+    if(valid) {
+      // hash password
+      if (params.password) {
+        params.password = await bcrypt.hash(params.password, 10);
+      }
+
+      // save user
+      const user = await db.User.create(params);
+      const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
+        expiresIn: '7d',
+      });
+
+      // make dummy profile
+      const profile = await db.Profile.create({
+        name: '',
+        email: params.email,
+        UserId: user.id,
+      });
+      res.json({ ...omitHash(user.get()), token });
     }
-
-    // save user
-    const user = await db.User.create(params);
-    const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
-      expiresIn: '7d',
-    });
-
-    // make dummy profile
-    const profile = await db.Profile.create({
-      name: '',
-      email: params.email,
-      UserId: user.id,
-    });
-    res.json({ ...omitHash(user.get()), token });
+    else {
+      res.statusCode = 400;
+      throw new Error('Enter a valid email');
+    }
   },
   getProfile: async (req, res) => {
     // getting profile using req.user.id
@@ -61,7 +82,7 @@ module.exports = {
       where: {
         UserId: userId,
       },
-      attributes: ['id', 'email', 'authCode', 'UserId', 'name']
+      attributes: ['id', 'email', 'authCode', 'UserId', 'name', 'phoneNumber', 'reminders']
     })
       .then(async(data) => {
         const duplicate = {...data.dataValues};
@@ -99,8 +120,15 @@ module.exports = {
           duplicate.name = req.body.name;
         }
 
-        if (req.body.authCode) {
+        if (req.body.authCode !== null) {
           duplicate.authCode = await encryptDecrypt.encrypt(req.body.authCode);
+        }
+
+        if(req.body.phoneNumber !== null) {
+          duplicate.phoneNumber = req.body.phoneNumber;
+        }
+        if(req.body.reminders !== null) {
+          duplicate.reminders = req.body.reminders;
         }
         await data
           .update(duplicate)
