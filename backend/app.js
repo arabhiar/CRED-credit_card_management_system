@@ -3,9 +3,12 @@ const app = express();
 const db = require('./models');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const morgan = require('morgan');
-const { errorHandler } = require('./middlewares/errorHandling');
 dotenv.config();
+const morgan = require('morgan');
+const reminder = require('./reminder');
+
+const { errorHandler } = require('./middlewares/errorHandling');
+
 
 const PORT = process.env.PORT || 5000;
 
@@ -30,9 +33,11 @@ app.use((req, res) => {
     throw new Error(`404 not found`);
 })
 
+
 // Error Handler
 app.use(errorHandler);
 
+reminder();
 
 
 

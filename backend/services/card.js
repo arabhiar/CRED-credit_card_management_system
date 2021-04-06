@@ -81,6 +81,7 @@ module.exports = {
                     for(const profile of card.Profiles) {
 
                         // if the authCode is same of the input user and some other user,
+                        if(profile.authCode === null) continue;
                         const decryptedAuthCode = await encryptDecrypt.decrypt(profile.authCode);
                         if(decryptedAuthCode === req.body.authCode) {
 
@@ -98,7 +99,11 @@ module.exports = {
                                         id: card.id,
                                     }
                                 });
+                                
                                 cardAssociated.addProfile(profileAssociated);
+                                const outstandingAmount = await calculateOutstandingAmount(cardAssociated.id);
+                                cardAssociated.outstandingAmount = outstandingAmount;
+
                                 res.status(200).json(cardAssociated);
                                 cardAdded = true;
                                 return;
@@ -467,7 +472,7 @@ module.exports = {
                         throw new Error(err);
                     })
                 }
-                res.status(200).send("Paid !");
+                res.status(200).send("Statement Posted !");
                 return;
             }
         }
