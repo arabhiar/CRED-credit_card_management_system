@@ -30,6 +30,7 @@
     "sequelize": "^6.5.0",
     "sequelize-cli": "^6.2.0",
     "sequelize-mysql-timestamp": "^1.4.0",
+    "swagger-ui-express": "^4.1.6",
     "twilio": "^3.59.0",
     "uuid": "^8.3.2"
   },

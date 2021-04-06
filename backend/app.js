@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const morgan = require('morgan');
 const reminder = require('./reminder');
+// const swaggerDocument = require('./swagger.json');
 
 const { errorHandler } = require('./middlewares/errorHandling');
 
@@ -33,12 +34,10 @@ app.use((req, res) => {
     throw new Error(`404 not found`);
 })
 
-
 // Error Handler
 app.use(errorHandler);
 
 reminder();
-
 
 
 db.sequelize.sync().then(() => {
