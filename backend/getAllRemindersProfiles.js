@@ -27,15 +27,17 @@ const getAllRemindersProfiles = async() => {
                   id: profile.ProfileId,
                   reminders: true
                 },
-                attributes: ['email', 'phoneNumber']
+                attributes: ['email', 'phoneNumber', 'reminders']
               })
                 .then(async(profileInfo) => {
-                  data.push({
-                    'email': profileInfo.email,
-                    'outstandingAmount': outstandingAmount,
-                    'phoneNumber': profileInfo.phoneNumber,
-                    'cardNumber': await encryptDecrypt.decrypt(currentCardNumber)
-                  });
+                  if(profileInfo.reminders === true) {
+                    data.push({
+                      'email': profileInfo.email,
+                      'outstandingAmount': outstandingAmount,
+                      'phoneNumber': profileInfo.phoneNumber,
+                      'cardNumber': await encryptDecrypt.decrypt(currentCardNumber)
+                    });
+                  }
                 })
                 .catch((err) => {
                   console.log(err);
