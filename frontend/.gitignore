@@ -24,3 +24,4 @@ yarn-error.log*
 
 # custom
 playground/
+package-lock.json
