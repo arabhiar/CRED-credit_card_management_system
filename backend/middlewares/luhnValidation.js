@@ -6,6 +6,7 @@ const luhnValidation = async(req, res, next) => {
     }
     const validCard = await Luhn.isValid(req.body.cardNumber);
     if(validCard === false) {
+        res.statusCode = 422;
         next(`Card is not valid!`);
     }
     else {

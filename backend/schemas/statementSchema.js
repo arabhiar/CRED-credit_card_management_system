@@ -8,7 +8,7 @@ const statementSchema = (req, res, next) => {
         credDeb: Joi.boolean().required(),
     })
     const arraySchema = Joi.array().items(schema);
-    verifyStatementSchema(req, next, arraySchema);
+    verifyStatementSchema(req, res, next, arraySchema);
 }
 
 module.exports = statementSchema;

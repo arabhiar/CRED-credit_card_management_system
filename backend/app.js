@@ -6,7 +6,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 const morgan = require('morgan');
 const reminder = require('./reminder');
-// const swaggerDocument = require('./swagger.json');
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./swagger.json');
 
 const { errorHandler } = require('./middlewares/errorHandling');
 
@@ -28,16 +29,23 @@ const cardRoute = require('./routes/card');
 app.use('/api/user', authRoute);
 app.use('/api/cards', cardRoute);
 
+app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // 404 
 app.use((req, res) => {
     res.statusCode = 404;
     throw new Error(`404 not found`);
 })
 
+
+
+
 // Error Handler
 app.use(errorHandler);
 
 reminder();
+
+
 
 
 db.sequelize.sync().then(() => {

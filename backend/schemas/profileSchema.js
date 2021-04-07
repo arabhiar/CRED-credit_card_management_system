@@ -7,7 +7,7 @@ const profileSchema = (req, res, next) => {
         reminders: Joi.boolean(),
         phoneNumber: Joi.string().length(10).pattern(/^[0-9]+$/)
     })
-    verifySchema(req, next, schema);
+    verifySchema(req, res, next, schema);
 }
 
 module.exports = profileSchema;
