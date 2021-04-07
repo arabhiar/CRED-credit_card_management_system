@@ -1,0 +1,1065 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "CredT8 API",
+      "description": "Cred - Credit Card Management System",
+      "contact": {
+        "email": "narendramanglani04@gmail.com"
+      },
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      },
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:5000/api"
+      }
+    ],
+    "tags": [
+      {
+        "name": "auth",
+        "description": "Deals with Login and signup"
+      },
+      {
+        "name": "profile",
+        "description": "Deals with Profile of the loggedIn user"
+      },
+      {
+        "name": "cards",
+        "description": "Deals with the cards requests of the loggedIn user"
+      }
+    ],
+    "paths": {
+      "/user/profile": {
+        "get": {
+          "tags": [
+            "profile"
+          ],
+          "summary": "Get the current loggedIn user profile Information.\"",
+          "operationId": "getProfile",
+          "responses": {
+            "200": {
+              "description": "Request served successfully.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/profileResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "x-codegen-request-body-name": "body"
+        },
+        "patch": {
+          "tags": [
+            "profile"
+          ],
+          "summary": "Edit the current loggedIn user profile Information.",
+          "operationId": "editProfile",
+          "requestBody": {
+            "description": "request accepts the json object as shown in the following example value schema.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/editProfileBody"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Request served successfully.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/profileResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "422": {
+              "description": "Some fields are missing or maybe wrong."
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {}
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "x-codegen-request-body-name": "body"
+        }
+      },
+      "/user/login": {
+        "post": {
+          "tags": [
+            "auth"
+          ],
+          "summary": "Login route",
+          "operationId": "login",
+          "requestBody": {
+            "description": "request accepts the json object as shown in the following example value schema.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signupLoginBody"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Login Successful",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/signupLoginResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Email address is not valid"
+            },
+            "401": {
+              "description": "Wrong email or password"
+            },
+            "422": {
+              "description": "Some fields are missing or maybe wrong."
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "x-codegen-request-body-name": "body"
+        }
+      },
+      "/user/signup": {
+        "post": {
+          "tags": [
+            "auth"
+          ],
+          "summary": "Signup route",
+          "operationId": "signup",
+          "requestBody": {
+            "description": "request accepts the json object as shown in the following example value schema.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signupLoginBody"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Login Successful",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/signupLoginResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Email address is not valid"
+            },
+            "409": {
+              "description": "Email already exists"
+            },
+            "422": {
+              "description": "Some fields are missing or maybe wrong."
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "x-codegen-request-body-name": "body"
+        }
+      },
+      "/cards/": {
+        "post": {
+          "tags": [
+            "cards"
+          ],
+          "summary": "Add Card",
+          "operationId": "AddCard",
+          "requestBody": {
+            "description": "request accepts the json object as shown in the following example value schema.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/addCardBody"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Card Added successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/addCardResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "409": {
+              "description": "Card already associated with the loggedIn user"
+            },
+            "422": {
+              "description": "Some fields are missing or maybe wrong."
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "x-codegen-request-body-name": "body"
+        },
+        "get": {
+          "tags": [
+            "cards"
+          ],
+          "summary": "Get all Cards related to that user",
+          "operationId": "getAllCards",
+          "responses": {
+            "200": {
+              "description": "Request served successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/getCardResponse"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+      "/cards/{card_id}": {
+        "get": {
+          "tags": [
+            "cards"
+          ],
+          "summary": "Get a cards by cardId",
+          "operationId": "getCardById",
+          "parameters": [
+            {
+              "name": "card_id",
+              "in": "path",
+              "description": "card_id of the particular card which is associated with the logged in user.",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Request served successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/getCardResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "Card not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+      "/cards/{id}/pay": {
+        "post": {
+          "tags": [
+            "cards"
+          ],
+          "summary": "Pay the outstanding amount against the cardNumber passed in the parameter",
+          "operationId": "payBill",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "id is the cardNumber against which you want to pay.",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "request accepts the json object as shown in the following example value schema.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/payBillBody"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Amount paid successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "$ref": "#/components/schemas/payBillResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "Card not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+      "/cards/{id}/statements": {
+        "get": {
+          "tags": [
+            "cards"
+          ],
+          "summary": "Get all the statements for a particular card",
+          "operationId": "getAllStatements",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "id is the cardNumber.",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Request served successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/getAllStatementsResponse"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "Card not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+      "/cards/{id}/statements/{year}/{month}": {
+        "get": {
+          "tags": [
+            "cards"
+          ],
+          "summary": "Get statements of a particular card for a particular month of an year",
+          "operationId": "getStatementsYearMonth",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "id is the cardNumber.",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "string"
+              }
+            },
+            {
+              "name": "year",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "integer"
+              }
+            },
+            {
+              "name": "month",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Request served successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/getStatementsYearMonthResponse"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "Card not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        },
+        "post": {
+          "tags": [
+            "cards"
+          ],
+          "summary": "post statements for a particular card for a particular month of a year",
+          "operationId": "postStatementsYearMonth",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "id is the cardNumber.",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "string"
+              }
+            },
+            {
+              "name": "year",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "integer"
+              }
+            },
+            {
+              "name": "month",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "request accepts the array of json object as shown in the following example value schema.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/postStatementsYearMonthBody"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "statements posted successfully"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/cards/{id}/smartStatement": {
+        "get": {
+          "tags": [
+            "cards"
+          ],
+          "summary": "Get smart statements for a particular card for all transactions",
+          "operationId": "getsmartStatements",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "id is the cardNumber.",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Request served successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/getSmartStatementsResponse"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "Card not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+      "/cards/{id}/smartStatement/{year}/{month}": {
+        "get": {
+          "tags": [
+            "cards"
+          ],
+          "summary": "Get smart statements of a particular card for a particular month of an year",
+          "operationId": "getSmartStatementsYearMonth",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "id is the cardNumber.",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "string"
+              }
+            },
+            {
+              "name": "year",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "integer"
+              }
+            },
+            {
+              "name": "month",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Request served successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/getSmartStatementsResponse"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "Card not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "signupLoginBody": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        },
+        "signupLoginResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string"
+            },
+            "updatedAt": {
+              "type": "string"
+            },
+            "token": {
+              "type": "string",
+              "description": "The JWT token to access secure routes"
+            }
+          }
+        },
+        "profileResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "description": "email of the loggedIn user"
+            },
+            "authCode": {
+              "type": "string",
+              "description": "using this authCode, other users can add the cards associated with this user."
+            },
+            "UserId": {
+              "type": "string",
+              "description": "LoggedIn user id"
+            },
+            "name": {
+              "type": "string",
+              "description": "LoggedIn User name"
+            },
+            "phoneNumber": {
+              "type": "string"
+            },
+            "reminders": {
+              "type": "boolean",
+              "default": true,
+              "description": "If user wants to get notified for the outstanding amount or not."
+            }
+          }
+        },
+        "editProfileBody": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "name to be changed"
+            },
+            "phoneNumber": {
+              "type": "string",
+              "description": "phone number to be changed"
+            },
+            "authCode": {
+              "type": "string",
+              "description": "authCode to be changed"
+            },
+            "reminders": {
+              "type": "boolean",
+              "description": "whether user wants to receive the reminders or not."
+            }
+          }
+        },
+        "addCardBody": {
+          "type": "object",
+          "properties": {
+            "cardNumber": {
+              "type": "string",
+              "description": "card number to be added."
+            },
+            "cardOwnerName": {
+              "type": "string",
+              "description": "card holder name."
+            },
+            "expiryMonth": {
+              "type": "integer",
+              "default": 1
+            },
+            "expiryYear": {
+              "type": "integer",
+              "default": 2022
+            },
+            "cvv": {
+              "type": "integer",
+              "default": 111
+            },
+            "authCode": {
+              "type": "string"
+            }
+          }
+        },
+        "addCardResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "outstandingAmount": {
+              "type": "number"
+            },
+            "cardNumber": {
+              "type": "string",
+              "description": "card number to be added."
+            },
+            "cardOwnerName": {
+              "type": "string",
+              "description": "card holder name."
+            },
+            "expiryMonth": {
+              "type": "integer",
+              "default": 1
+            },
+            "expiryYear": {
+              "type": "integer",
+              "default": 2022
+            },
+            "cvv": {
+              "type": "integer",
+              "default": 111
+            },
+            "updatedAt": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string"
+            }
+          }
+        },
+        "getCardResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "outstandingAmount": {
+              "type": "number"
+            },
+            "cardNumber": {
+              "type": "string",
+              "description": "card number to be added."
+            },
+            "cardOwnerName": {
+              "type": "string",
+              "description": "card holder name."
+            },
+            "expiryMonth": {
+              "type": "integer",
+              "default": 1
+            },
+            "expiryYear": {
+              "type": "integer",
+              "default": 2022
+            }
+          }
+        },
+        "payBillBody": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "number",
+              "format": "float",
+              "default": 25.45
+            }
+          }
+        },
+        "payBillResponse": {
+          "type": "object",
+          "properties": {
+            "transactionId": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "number"
+            },
+            "vendor": {
+              "type": "string"
+            },
+            "credDeb": {
+              "type": "boolean",
+              "default": true
+            },
+            "category": {
+              "type": "string"
+            },
+            "cardNumber": {
+              "type": "string"
+            },
+            "transactionDateTime": {
+              "type": "number",
+              "default": 1617811732708
+            },
+            "CardId": {
+              "type": "string"
+            },
+            "userAssociated": {
+              "type": "string"
+            },
+            "updatedAt": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string"
+            }
+          }
+        },
+        "getAllStatementsResponse": {
+          "type": "object",
+          "properties": {
+            "transactionId": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "number"
+            },
+            "vendor": {
+              "type": "string"
+            },
+            "credDeb": {
+              "type": "boolean",
+              "default": true
+            },
+            "category": {
+              "type": "string"
+            },
+            "cardNumber": {
+              "type": "string"
+            },
+            "transactionDateTime": {
+              "type": "string"
+            },
+            "userAssociated": {
+              "type": "string"
+            }
+          }
+        },
+        "postStatementsYearMonthBody": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "number"
+            },
+            "vendor": {
+              "type": "string"
+            },
+            "credDeb": {
+              "type": "boolean",
+              "default": false
+            },
+            "category": {
+              "type": "string"
+            }
+          }
+        },
+        "getStatementsYearMonthResponse": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "transactionId": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "number"
+                  },
+                  "vendor": {
+                    "type": "string"
+                  },
+                  "credDeb": {
+                    "type": "boolean",
+                    "default": true
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "cardNumber": {
+                    "type": "string"
+                  },
+                  "transactionDateTime": {
+                    "type": "string"
+                  },
+                  "userAssociated": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "pages": {
+              "type": "integer",
+              "default": 1
+            },
+            "page": {
+              "type": "integer",
+              "default": 1
+            }
+          }
+        },
+        "getSmartStatementsResponse": {
+          "type": "object",
+          "properties": {
+            "categories": {
+              "type": "object",
+              "properties": {
+                "labels": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              }
+            },
+            "vendors": {
+              "type": "object",
+              "properties": {
+                "labels": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    }
+  }

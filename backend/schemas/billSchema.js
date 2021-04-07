@@ -4,7 +4,7 @@ const billSchema = (req, res, next) => {
     const schema = Joi.object({
         amount: Joi.number().precision(2).required(),
     })
-    verifySchema(req, next, schema);
+    verifySchema(req, res, next, schema);
 }
 
 module.exports = billSchema;

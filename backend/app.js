@@ -6,6 +6,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 const morgan = require('morgan');
 const reminder = require('./reminder');
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./swagger.json');
 
 const { errorHandler } = require('./middlewares/errorHandling');
 
@@ -27,6 +29,8 @@ const cardRoute = require('./routes/card');
 app.use('/api/user', authRoute);
 app.use('/api/cards', cardRoute);
 
+app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // 404 
 app.use((req, res) => {
     res.statusCode = 404;
@@ -34,10 +38,13 @@ app.use((req, res) => {
 })
 
 
+
+
 // Error Handler
 app.use(errorHandler);
 
 reminder();
+
 
 
 

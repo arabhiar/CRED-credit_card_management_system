@@ -14,6 +14,10 @@ module.exports = {
             attributes: ['cardNumber', 'cardOwnerName', 'expiryMonth', 'expiryYear', 'id'],
             include: [db.Profile],
         })
+        .catch((err) => {
+            res.statusCode = 500;
+            throw new Error(err);
+        })
 
         // if there is not authCode in req
         if(req.body.authCode === undefined) {
@@ -26,13 +30,13 @@ module.exports = {
 
                         // if the found card is added by the same user
                         if(req.user.id === profile.UserId) {
-                            res.statusCode = 500;
+                            res.statusCode = 409;
                             throw new Error('Card is Already Added');
                         }   
                     }
 
                     // if the found card is added by some other user
-                    res.statusCode = 500;
+                    res.statusCode = 422;   
                     throw new Error('You\'re are not authorised to add this card');
                 }   
             }
@@ -42,7 +46,10 @@ module.exports = {
                 where: {
                     UserId: req.user.id,
                 }
-            });
+            }).catch((err) => {
+                res.statusCode = 500;
+                throw new Error(err);
+            })
 
             const newCard = await db.Card.create({
                 cardOwnerName: req.body.cardOwnerName.toUpperCase(),
@@ -51,6 +58,7 @@ module.exports = {
                 expiryYear: req.body.expiryYear,
                 cvv: req.body.cvv
             }).catch((err) => {
+                res.statusCode = 500;
                 throw new Error(err);
             })
 
@@ -72,7 +80,7 @@ module.exports = {
 
                         // if the same cardNumber is added by the user itself
                         if(profile.UserId === req.user.id) {
-                            res.statusCode = 500;
+                            res.statusCode = 409;
                             throw new Error('Card is Already Added');
                         }
                     }
@@ -111,7 +119,7 @@ module.exports = {
 
                             // if the name or expiry is wrong
                             else {
-                                res.statusCode = 500;
+                                res.statusCode = 422;
                                 throw new Error('Wrong Card Details or Auth Code!')
                             }
                         }
@@ -121,7 +129,7 @@ module.exports = {
 
             // if same cardNumber exists, but authCode doesn't match
             if(sameCardNumberExist) {
-                res.statusCode = 500;
+                res.statusCode = 422;
                 throw new Error('Wrong Card Details or Auth Code!');
             }
         }
@@ -218,7 +226,7 @@ module.exports = {
                 return;
             }
         }
-        res.statusCode = 500;
+        res.statusCode = 404;
         throw new Error('Wrong card id or you\'re not authorised !');
     },
     payBill: async(req, res) => {
@@ -279,6 +287,9 @@ module.exports = {
                 return;
             }
         }
+
+        res.statusCode = 404;
+        throw new Error('Card not found.');
     },
 
     getStatementsYearMonth: async(req, res) => {
@@ -339,6 +350,10 @@ module.exports = {
                         },
                     },
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
+<<<<<<< HEAD
+=======
+
+>>>>>>> 637d68e41705bb549d81beee53d9e00d28226094
                 }).catch((err) => {
                     res.statusCode = 500;
                     throw new Error(err);
@@ -361,9 +376,16 @@ module.exports = {
                 const indexOfFirstStatement = indexOfLastStatement - perPage;
                 const currentStatements = statements.slice(indexOfFirstStatement, indexOfLastStatement);
                 res.status(200).json({data: currentStatements, pages, page});
+<<<<<<< HEAD
+=======
+
+>>>>>>> 637d68e41705bb549d81beee53d9e00d28226094
                 return;
             }
         }
+
+        res.statusCode = 404;
+        throw new Error('Card not found');
     },
 
     getAllstatements: async(req, res) => {
@@ -424,6 +446,8 @@ module.exports = {
                 return;
             }
         }
+        res.statusCode = 404;
+        throw new Error('Card not found');
     },
     postStatement: async(req, res) => {
 
@@ -581,6 +605,8 @@ module.exports = {
                 return;
             }
         }
+        res.statusCode = 404;   
+        throw new Error('Card not found');
     },
     getSmartStatementYearMonth: async(req, res) => {
         // cardNumber, year, month
@@ -717,6 +743,7 @@ module.exports = {
                 return;
             }
         }
-
+        res.statusCode = 404;   
+        throw new Error('Card not found');
     }
 }

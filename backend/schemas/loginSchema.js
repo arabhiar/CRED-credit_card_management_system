@@ -6,7 +6,7 @@ const loginSchema = (req, res, next) => {
         email: Joi.string().email().required(),
         password: Joi.string().required()
     });
-    verifySchema(req, next, schema);
+    verifySchema(req, res, next, schema);
 }
 
 module.exports = loginSchema;

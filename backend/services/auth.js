@@ -12,7 +12,7 @@ const omitHash = (user) => {
 };
 
 const isValidEmail = async(email) => {
-  return emailValidator.validate(email);
+  return await emailValidator.validate(email);
 }
 
 module.exports = {
@@ -23,7 +23,10 @@ module.exports = {
     if(valid) {
       const user = await db.User.scope('withPassword').findOne({
         where: { email },
-      });
+      }).catch((err) => {
+        res.statusCode = 500;
+        throw new Error(err);
+      })
       if (!user || !(await bcrypt.compare(password, user.password))) {
         res.statusCode = 401;
         throw new Error('Username or password is incorrect');
@@ -32,7 +35,7 @@ module.exports = {
       const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
         expiresIn: '7d',
       });
-      res.json({ ...omitHash(user.get()), token });
+      res.status(200).json({ ...omitHash(user.get()), token });
     }
     else {
       res.statusCode = 400;
@@ -43,7 +46,7 @@ module.exports = {
   signup: async (params, res) => {
     // validate
     if (await db.User.findOne({ where: { email: params.email } })) {
-      res.statusCode = 500;
+      res.statusCode = 409;
       throw new Error(`email "${params.email}" is already registered!`);
     }
 
@@ -56,7 +59,11 @@ module.exports = {
       }
 
       // save user
-      const user = await db.User.create(params);
+      const user = await db.User.create(params)
+        .catch((err) => {
+          res.statusCode = 500;
+          throw new Error(err);
+        })
       const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
         expiresIn: '7d',
       });
@@ -66,8 +73,12 @@ module.exports = {
         name: '',
         email: params.email,
         UserId: user.id,
-      });
-      res.json({ ...omitHash(user.get()), token });
+      })
+        .catch((err) => {
+          res.statusCode = 500;
+          throw new Error(err);
+        })
+      res.status(200).json({ ...omitHash(user.get()), token });
     }
     else {
       res.statusCode = 400;
@@ -111,6 +122,7 @@ module.exports = {
         where: {
           UserId: userId,
         },
+        attributes: ['id', 'email', 'authCode', 'UserId', 'name', 'phoneNumber', 'reminders']
       })
       const duplicate = {...userProfile.dataValues};
       if (req.body.name !== null && req.body.name !== undefined) {
