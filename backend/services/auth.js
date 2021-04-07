@@ -106,10 +106,10 @@ module.exports = {
 
     // assuming email can'be changed
 
+    // console.log(req.body)
     const userId = req.user.id;
 
-
-    const userProfile = await db.Profile.findOne({
+    db.Profile.findOne({
       where: {
         UserId: userId,
       },
@@ -120,14 +120,14 @@ module.exports = {
           duplicate.name = req.body.name;
         }
 
-        if (req.body.authCode !== null) {
+        if (req.body.authCode !== null && req.body.authCode !== undefined) {
           duplicate.authCode = await encryptDecrypt.encrypt(req.body.authCode);
         }
 
-        if(req.body.phoneNumber !== null) {
+        if(req.body.phoneNumber !== null && req.body.phoneNumber !== undefined) {
           duplicate.phoneNumber = req.body.phoneNumber;
         }
-        if(req.body.reminders !== null) {
+        if(req.body.reminders !== null && req.body.reminders !== undefined) {
           duplicate.reminders = req.body.reminders;
         }
         await data

@@ -349,6 +349,7 @@ module.exports = {
                             return 0;
                         });
                         // Pagination
+                        data.reverse();
                         const perPage = 10;
                         const page = Number(req.query.pageNumber) || 1;
                         const count = data.length;

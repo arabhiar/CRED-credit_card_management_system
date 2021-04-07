@@ -54,7 +54,7 @@ const reminder = () => {
                     client.messages
                         .create({
                             body: `Hi cred user, You have an outstanding amount ${data.outstandingAmount} remaining to pay against card - ${data.cardNumber}.\nPay before the end of this month to earn rewards.`,
-                            from: '+15078733918',
+                            from: process.env.TWILIO_PHONE_NO,
                             to: `+91${data.phoneNumber}`
                         })
                         .then(message => console.log(message.sid))
