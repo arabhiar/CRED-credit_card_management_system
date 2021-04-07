@@ -105,42 +105,12 @@ module.exports = {
 
     // assuming email can'be changed
 
-<<<<<<< HEAD
-    // console.log(req.body)
-    const userId = req.user.id;
-
-    db.Profile.findOne({
-      where: {
-        UserId: userId,
-      },
-    })
-      .then(async (data) => {
-        const duplicate = {...data};
-        if (req.body.name) {
-          duplicate.name = req.body.name;
-        }
-
-        if (req.body.authCode !== null && req.body.authCode !== undefined) {
-          duplicate.authCode = await encryptDecrypt.encrypt(req.body.authCode);
-        }
-
-        if(req.body.phoneNumber !== null && req.body.phoneNumber !== undefined) {
-          duplicate.phoneNumber = req.body.phoneNumber;
-        }
-        if(req.body.reminders !== null && req.body.reminders !== undefined) {
-          duplicate.reminders = req.body.reminders;
-        }
-        await data
-          .update(duplicate)
-          .then((editedProfile) => res.json(editedProfile));
-=======
     try {
       const userId = req.user.id;
       const userProfile = await db.Profile.findOne({
         where: {
           UserId: userId,
         },
->>>>>>> 51fe9cdfdc39b3986a4c112412f90ffdcfa362ac
       })
       const duplicate = {...userProfile.dataValues};
       if (req.body.name !== null && req.body.name !== undefined) {

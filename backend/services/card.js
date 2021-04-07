@@ -339,32 +339,6 @@ module.exports = {
                         },
                     },
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
-<<<<<<< HEAD
-                })  
-                    .then((data) => {
-                        data.sort(function(a, b) {
-                            if(a.transactionDateTime > b.transactionDateTime)
-                                return 1;
-                            if(a.transactionDateTime < b.transactionDateTime)
-                                return -1;
-                            return 0;
-                        });
-                        // Pagination
-                        data.reverse();
-                        const perPage = 10;
-                        const page = Number(req.query.pageNumber) || 1;
-                        const count = data.length;
-                        const pages = Math.ceil(count / perPage);
-                        const indexOfLastStatement = page * perPage;
-                        const indexOfFirstStatement = indexOfLastStatement - perPage;
-                        const currentStatements = data.slice(indexOfFirstStatement, indexOfLastStatement);
-                        res.status(200).json({data: currentStatements, pages, page});
-                    })
-                    .catch((err) => {
-                        res.statusCode = 500;
-                        throw new Error(err);
-                    })
-=======
                 }).catch((err) => {
                     res.statusCode = 500;
                     throw new Error(err);
@@ -386,7 +360,6 @@ module.exports = {
                 const indexOfFirstStatement = indexOfLastStatement - perPage;
                 const currentStatements = statements.slice(indexOfFirstStatement, indexOfLastStatement);
                 res.status(200).json({data: currentStatements, pages, page});
->>>>>>> 51fe9cdfdc39b3986a4c112412f90ffdcfa362ac
                 return;
             }
         }
