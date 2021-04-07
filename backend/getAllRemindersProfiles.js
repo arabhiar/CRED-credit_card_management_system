@@ -3,53 +3,50 @@ const calculateOutstandingAmount = require('./services/calculateOutstandingAmoun
 const encryptDecrypt = require('./services/encryptDecrypt');
 
 const getAllRemindersProfiles = async() => {
-  const data = [];
-  await db.Card.findAll({
-    where: {},
-    attributes: ['id', 'cardNumber']
-  })
-  .then(async(allCards) => {
+
+  try {
+    const data = [];
+    const allCards = await db.Card.findAll({
+      where: {},
+      attributes: ['id', 'cardNumber']
+    })
+    
     for(const card of allCards) {
       const outstandingAmount = await calculateOutstandingAmount(card.id);
       const currentCardNumber = (card.cardNumber);
       // console.log(currentCardNumber, outstandingAmount);
       if(outstandingAmount > 0) {
-        await db.Profile_Card.findAll({
+
+        const profileIdAssociated = await db.Profile_Card.findAll({
           where: {
             CardId: card.id
           },
           attributes: ['ProfileId']
         })
-          .then(async(profileIdAssociated) => {
-            for(const profile of profileIdAssociated) {
-              await db.Profile.findOne({
-                where: {
-                  id: profile.ProfileId,
-                  reminders: true
-                },
-                attributes: ['email', 'phoneNumber', 'reminders']
-              })
-                .then(async(profileInfo) => {
-                  if(profileInfo.reminders === true) {
-                    data.push({
-                      'email': profileInfo.email,
-                      'outstandingAmount': outstandingAmount,
-                      'phoneNumber': profileInfo.phoneNumber,
-                      'cardNumber': await encryptDecrypt.decrypt(currentCardNumber)
-                    });
-                  }
-                })
-                .catch((err) => {
-                  console.log(err);
-                })
-            }
+        for(const profile of profileIdAssociated) {
+          const profileInfo = await db.Profile.findOne({
+            where: {
+              id: profile.ProfileId,
+              reminders: true
+            },
+            attributes: ['email', 'phoneNumber', 'reminders']
           })
-          .catch((err) => console.log(err));
+          if(profileInfo.reminders === true) {
+            data.push({
+              'email': profileInfo.email,
+              'outstandingAmount': outstandingAmount,
+              'phoneNumber': profileInfo.phoneNumber,
+              'cardNumber': await encryptDecrypt.decrypt(currentCardNumber)
+            });
+          }
+        }
       }
     }
-  })
-  
-  return data;
+    return data;
+  }
+  catch(err) {
+    console.log(err);
+  }
 }
 
 module.exports = getAllRemindersProfiles;
