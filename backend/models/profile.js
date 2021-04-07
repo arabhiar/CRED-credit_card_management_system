@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
     const Profile = sequelize.define('Profile', {
         name: {
-            allowNull: false,
+            allowNull: true,
             type: DataTypes.STRING,
         },
         id: {
@@ -19,6 +19,15 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             type: DataTypes.STRING,
         },
+        reminders: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
+        },
+        phoneNumber: {
+            allowNull: true,
+            type: DataTypes.STRING,
+        }
     });
 
     Profile.associate = models => {

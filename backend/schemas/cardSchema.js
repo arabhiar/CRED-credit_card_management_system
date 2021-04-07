@@ -9,7 +9,7 @@ const cardSchema = (req, res, next) => {
         authCode: Joi.string(),
         cvv: Joi.number().integer().min(100).max(9999).required(),
     })
-    verifySchema(req, next, schema);
+    verifySchema(req, res, next, schema);
 }
 
 module.exports = cardSchema;
