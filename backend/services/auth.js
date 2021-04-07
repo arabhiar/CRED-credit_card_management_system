@@ -76,28 +76,27 @@ module.exports = {
   },
   getProfile: async (req, res) => {
     // getting profile using req.user.id
-
-    const userId = req.user.id;
-    const userProfile = await db.Profile.findOne({
-      where: {
-        UserId: userId,
-      },
-      attributes: ['id', 'email', 'authCode', 'UserId', 'name', 'phoneNumber', 'reminders']
-    })
-      .then(async(data) => {
-        const duplicate = {...data.dataValues};
-        if(data.authCode === null) {
-          res.status(200).json(data);
-        }
-        else {
-          duplicate.authCode = await encryptDecrypt.decrypt(data.authCode);
-          res.status(200).json(duplicate);
-        }
+    try {
+      const userId = req.user.id;
+      const userProfile = await db.Profile.findOne({
+        where: {
+          UserId: userId,
+        },
+        attributes: ['id', 'email', 'authCode', 'UserId', 'name', 'phoneNumber', 'reminders']
       })
-      .catch((err) => {
-        res.statusCode = 500;
-        throw new Error(err);
-      });
+      const duplicate = {...userProfile.dataValues};
+      if(userProfile.authCode === null) {
+        res.status(200).json(userProfile);
+      }
+      else {
+        duplicate.authCode = await encryptDecrypt.decrypt(userProfile.authCode);
+        res.status(200).json(duplicate);
+      }
+    }
+    catch (err) {
+      res.statusCode = 500;
+      throw new Error(err);
+    };
   },
   editProfile: async (req, res) => {
     // getting profile using req.user.id
@@ -106,6 +105,7 @@ module.exports = {
 
     // assuming email can'be changed
 
+<<<<<<< HEAD
     // console.log(req.body)
     const userId = req.user.id;
 
@@ -133,10 +133,36 @@ module.exports = {
         await data
           .update(duplicate)
           .then((editedProfile) => res.json(editedProfile));
+=======
+    try {
+      const userId = req.user.id;
+      const userProfile = await db.Profile.findOne({
+        where: {
+          UserId: userId,
+        },
+>>>>>>> 51fe9cdfdc39b3986a4c112412f90ffdcfa362ac
       })
-      .catch((err) => {
-        res.statusCode = 500;
-        throw err;
-      });
+      const duplicate = {...userProfile.dataValues};
+      if (req.body.name !== null && req.body.name !== undefined) {
+        duplicate.name = req.body.name;
+      }
+
+      if (req.body.authCode !== null && req.body.authCode !== undefined) {
+        duplicate.authCode = await encryptDecrypt.encrypt(req.body.authCode);
+      }
+
+
+      if(req.body.phoneNumber !== null && req.body.phoneNumber !== undefined) {
+        duplicate.phoneNumber = req.body.phoneNumber;
+      }
+      if(req.body.reminders !== null && req.body.reminders !== undefined) {
+        duplicate.reminders = req.body.reminders;
+      }
+      await userProfile.update(duplicate);
+      res.status(200).send(duplicate);
+    } catch (error) {
+      res.statusCode = 500;
+      throw new Error(error);
+    }
   },
 };
