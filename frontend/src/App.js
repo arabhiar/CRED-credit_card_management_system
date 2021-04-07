@@ -4,11 +4,7 @@ import { Container } from 'react-bootstrap';
 import './App.scss';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import CreditCard2 from './components/CreditCard2';
 import AddCardScreen from './screens/AddCardScreen';
 import LoginScreen2 from './screens/LoginScreen2';
 import RegisterScreen2 from './screens/RegisterScreen2';
@@ -17,6 +13,7 @@ import CardScreen from './screens/CardScreen';
 import StatementScreen from './screens/StatementScreen';
 import SmartStatementScreen from './screens/SmartStatementScreen';
 import RadarChart from './components/RadarChart';
+import Coupon from './components/Coupon';
 
 function App() {
   return (
@@ -43,9 +40,10 @@ function App() {
             component={StatementScreen}
           />
           <Route path="/cards/:id" component={CardScreen} exact />
-          <Route path="/" component={HomeScreen} exact />
+          <Route path="/coupon" component={Coupon} />
           <Route path="/credit" component={CardScreen} exact />
           <Route path="/radar" component={RadarChart} />
+          <Route path="/" component={HomeScreen} exact />
         </Container>
       </main>
       <Footer />

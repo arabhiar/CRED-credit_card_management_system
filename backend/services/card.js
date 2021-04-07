@@ -350,7 +350,6 @@ module.exports = {
                         },
                     },
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
-
                 }).catch((err) => {
                     res.statusCode = 500;
                     throw new Error(err);
@@ -364,7 +363,8 @@ module.exports = {
                     return 0;
                 });
                 // Pagination
-                const perPage = 2;
+                statements.reverse();
+                const perPage = 10;
                 const page = Number(req.query.pageNumber) || 1;
                 const count = statements.length;
                 const pages = Math.ceil(count / perPage);
@@ -372,7 +372,6 @@ module.exports = {
                 const indexOfFirstStatement = indexOfLastStatement - perPage;
                 const currentStatements = statements.slice(indexOfFirstStatement, indexOfLastStatement);
                 res.status(200).json({data: currentStatements, pages, page});
-
                 return;
             }
         }

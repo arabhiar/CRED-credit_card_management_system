@@ -7,10 +7,13 @@ import {
   Image,
   Table,
   InputGroup,
+  OverlayTrigger,
+  Tooltip,
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import { Formik } from 'formik';
+import axios from 'axios';
 
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { listCards } from '../actions/cardActions';
@@ -21,6 +24,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { CARD_DETAILS_RESET } from '../constants/cardConstants';
 
 const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/g;
+const phoneRegex = /^\d{10}$/g;
 
 const validationSchema = yup.object().shape({
   name: yup.string().required("Name can't be empty."),
@@ -31,12 +35,16 @@ const validationSchema = yup.object().shape({
       'Auth Code must be min 8 characters, have 1 special character[#?!@$%^&*-], 1 uppercase, 1 lowercase and 1 number.'
     ),
   email: yup.string().required("Email can't be empty"),
+  phoneNumber: yup
+    .string()
+    .matches(phoneRegex, 'Phone no. must be of length 10'),
 });
 
 const initialValues = {
   name: '',
   authCode: '',
   email: '',
+  phoneNumber: '',
 };
 
 const ProfileScreen2 = (props) => {
@@ -47,6 +55,8 @@ const ProfileScreen2 = (props) => {
   const [updateAlert, setUpdateAlert] = useState(false);
   const [cardAlert, setCardAlert] = useState(false);
   const [showAuthCode, setShowAuthCode] = useState(false);
+  const [reminder, setReminder] = useState(false);
+  const [disableReminder, setDisableReminder] = useState(false);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -79,6 +89,8 @@ const ProfileScreen2 = (props) => {
         initialValues.name = user.name;
         initialValues.authCode = user.authCode ? user.authCode : '';
         initialValues.email = user.email;
+        initialValues.phoneNumber = user.phoneNumber;
+        setReminder(user.reminders);
       }
     }
   }, [history, dispatch, user, userInfo, updateSuccess]);
@@ -87,6 +99,9 @@ const ProfileScreen2 = (props) => {
     const data = { name: values.name };
     if (values.authCode) {
       data.authCode = values.authCode;
+    }
+    if (values.phoneNumber) {
+      data.phoneNumber = values.phoneNumber;
     }
     dispatch(updateUserProfile(data));
   };
@@ -101,6 +116,23 @@ const ProfileScreen2 = (props) => {
 
   const handleAuthCodeVisibility = () => {
     setShowAuthCode(!showAuthCode);
+  };
+
+  const handleReminderClick = async () => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    setDisableReminder(true);
+    const { data } = await axios.patch(
+      '/api/user/profile',
+      { reminders: !reminder },
+      config
+    );
+    setDisableReminder(false);
+    setReminder(data.reminders);
   };
 
   return (
@@ -132,9 +164,53 @@ const ProfileScreen2 = (props) => {
                   roundedCircle
                 />
                 <br />
-                <Button onClick={() => setReadOnly(false)} disabled={!readOnly}>
-                  <i className="fas fa-edit"></i>
-                </Button>
+
+                <OverlayTrigger
+                  placement="left"
+                  overlay={
+                    readOnly ? (
+                      <Tooltip id={`tooltip-left`}>Edit Profile</Tooltip>
+                    ) : (
+                      <></>
+                    )
+                  }
+                >
+                  <Button
+                    className="btn-sm"
+                    onClick={() => setReadOnly(false)}
+                    disabled={!readOnly}
+                    style={{ margin: '0.5rem 1rem' }}
+                    variant="outline-primary"
+                  >
+                    <i className="far fa-edit"></i>
+                  </Button>
+                </OverlayTrigger>
+
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id={`tooltip-right`}>
+                      {reminder ? 'Turn off reminder.' : 'Turn on reminder.'}
+                    </Tooltip>
+                  }
+                >
+                  <Button
+                    className="btn-sm"
+                    variant="outline-primary"
+                    style={{ margin: '0.5rem 1rem' }}
+                    onClick={handleReminderClick}
+                    disabled={disableReminder}
+                  >
+                    <i
+                      className={
+                        reminder
+                          ? 'far fa-bell-slash fa-lg'
+                          : 'far fa-bell fa-lg'
+                      }
+                    ></i>
+                  </Button>
+                </OverlayTrigger>
+
                 <Formik
                   enableReinitialize
                   validationSchema={validationSchema}
@@ -212,6 +288,28 @@ const ProfileScreen2 = (props) => {
                           </InputGroup>
                         </Col>
                       </Form.Group>
+                      <Form.Group as={Row} controlId="phoneNumber">
+                        <Form.Label column sm="3" className="form-label">
+                          Phone
+                        </Form.Label>
+                        <Col sm="9">
+                          <Form.Control
+                            type="text"
+                            name="phoneNumber"
+                            placeholder="Enter phone no."
+                            value={values.phoneNumber}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            isInvalid={!!errors.phoneNumber}
+                            disabled={readOnly}
+                          />
+                          {errors.phoneNumber && touched.phoneNumber && (
+                            <Form.Control.Feedback type="invalid">
+                              {errors.phoneNumber}
+                            </Form.Control.Feedback>
+                          )}
+                        </Col>
+                      </Form.Group>
                       <Form.Group as={Row} controlId="email">
                         <Form.Label column sm="3" className="form-label">
                           Email
@@ -267,7 +365,13 @@ const ProfileScreen2 = (props) => {
                 {errorCards}
               </AlertMessage>
             ) : (
-              <Table striped bordered hover responsive className="table-sm table-dark">
+              <Table
+                striped
+                bordered
+                hover
+                responsive
+                className="table-sm table-dark"
+              >
                 <thead>
                   <tr>
                     <th>S.NO.</th>
@@ -287,7 +391,10 @@ const ProfileScreen2 = (props) => {
                         <td>{card.outstandingAmount}</td>
                         <td>
                           <LinkContainer to={`/cards/${card.id}`}>
-                            <Button className="btn-sm btn btn-outline-info" variant="light">
+                            <Button
+                              className="btn-sm btn btn-outline-info"
+                              variant="light"
+                            >
                               Details
                             </Button>
                           </LinkContainer>

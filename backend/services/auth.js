@@ -133,6 +133,7 @@ module.exports = {
         duplicate.authCode = await encryptDecrypt.encrypt(req.body.authCode);
       }
 
+
       if(req.body.phoneNumber !== null && req.body.phoneNumber !== undefined) {
         duplicate.phoneNumber = req.body.phoneNumber;
       }

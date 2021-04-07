@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Route } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Navbar, Nav, Container, NavDropdown, Image } from 'react-bootstrap';
+import {
+  Navbar,
+  Nav,
+  Container,
+  NavDropdown,
+  Image,
+  NavLink,
+} from 'react-bootstrap';
 import SearchBox from '../SearchBox';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +18,8 @@ const Header = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const [coins, setCoins] = useState(135);
+
   const dispatch = useDispatch();
 
   const logoutHandler = () => {
@@ -19,7 +28,13 @@ const Header = () => {
 
   return (
     <header>
-      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect className='navbar-fixed-bottom navbar-inner'>
+      <Navbar
+        bg="dark"
+        variant="dark"
+        expand="lg"
+        collapseOnSelect
+        className="navbar-fixed-bottom navbar-inner"
+      >
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>
@@ -34,14 +49,22 @@ const Header = () => {
             <Route render={({ history }) => <SearchBox history={history} />} />
             <Nav className="ml-auto">
               {userInfo ? (
-                <NavDropdown title={userInfo.email} id="username">
-                  <LinkContainer to="/profile">
-                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                <>
+                  <LinkContainer style={{ paddingRight: '2rem' }} to="/rewards">
+                    <NavLink>
+                      <i class="fas fa-coins fa-lg"></i> {coins}
+                    </NavLink>
                   </LinkContainer>
-                  <NavDropdown.Item onClick={logoutHandler}>
-                    Logout
-                  </NavDropdown.Item>
-                </NavDropdown>
+
+                  <NavDropdown title={userInfo.email} id="username">
+                    <LinkContainer to="/profile">
+                      <NavDropdown.Item>Profile</NavDropdown.Item>
+                    </LinkContainer>
+                    <NavDropdown.Item onClick={logoutHandler}>
+                      Logout
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </>
               ) : (
                 <LinkContainer to="/login">
                   <Nav.Link>
