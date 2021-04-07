@@ -350,10 +350,6 @@ module.exports = {
                         },
                     },
                     attributes: ['transactionId', 'amount', 'vendor', 'credDeb', 'category', 'transactionDateTime', 'userAssociated']
-<<<<<<< HEAD
-=======
-
->>>>>>> 637d68e41705bb549d81beee53d9e00d28226094
                 }).catch((err) => {
                     res.statusCode = 500;
                     throw new Error(err);
@@ -376,10 +372,6 @@ module.exports = {
                 const indexOfFirstStatement = indexOfLastStatement - perPage;
                 const currentStatements = statements.slice(indexOfFirstStatement, indexOfLastStatement);
                 res.status(200).json({data: currentStatements, pages, page});
-<<<<<<< HEAD
-=======
-
->>>>>>> 637d68e41705bb549d81beee53d9e00d28226094
                 return;
             }
         }
