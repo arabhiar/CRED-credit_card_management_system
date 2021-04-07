@@ -352,7 +352,8 @@ module.exports = {
                     return 0;
                 });
                 // Pagination
-                const perPage = 2;
+                statements.reverse();
+                const perPage = 10;
                 const page = Number(req.query.pageNumber) || 1;
                 const count = statements.length;
                 const pages = Math.ceil(count / perPage);
