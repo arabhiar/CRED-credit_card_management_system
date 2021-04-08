@@ -21,7 +21,11 @@ import {
   smartStatementsByMonthReducer,
 } from './reducers/statementReducer';
 
-import { payReducer, rewardPointsReducer } from './reducers/paymentReducer';
+import { payReducer } from './reducers/paymentReducer';
+import {
+  rewardPointsReducer,
+  allCouponsReducer,
+} from './reducers/rewardReducer';
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
@@ -36,6 +40,7 @@ const reducer = combineReducers({
   recentStatements: recentStatementsReducer,
   pay: payReducer,
   rewardPoints: rewardPointsReducer,
+  allCoupons: allCouponsReducer,
 });
 
 const userInfoFromLocalStorage = localStorage.getItem('userInfo')
