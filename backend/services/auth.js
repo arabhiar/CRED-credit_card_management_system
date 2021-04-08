@@ -73,6 +73,7 @@ module.exports = {
         name: '',
         email: params.email,
         UserId: user.id,
+        coins: 0
       })
         .catch((err) => {
           res.statusCode = 500;
@@ -93,7 +94,7 @@ module.exports = {
         where: {
           UserId: userId,
         },
-        attributes: ['id', 'email', 'authCode', 'UserId', 'name', 'phoneNumber', 'reminders']
+        attributes: ['id', 'email', 'authCode', 'UserId', 'name', 'phoneNumber', 'reminders', 'coins']
       })
       const duplicate = {...userProfile.dataValues};
       if(userProfile.authCode === null) {
@@ -122,7 +123,7 @@ module.exports = {
         where: {
           UserId: userId,
         },
-        attributes: ['id', 'email', 'authCode', 'UserId', 'name', 'phoneNumber', 'reminders']
+        attributes: ['id', 'email', 'authCode', 'UserId', 'name', 'phoneNumber', 'reminders', 'coins']
       })
       const duplicate = {...userProfile.dataValues};
       if (req.body.name !== null && req.body.name !== undefined) {
