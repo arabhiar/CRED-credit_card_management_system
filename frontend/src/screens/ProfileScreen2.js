@@ -135,6 +135,10 @@ const ProfileScreen2 = (props) => {
     setReminder(data.reminders);
   };
 
+  const handleCouponClick = () => {
+    history.push('/rewards/coupons')
+  }
+
   return (
     <>
       <Row>
@@ -187,9 +191,9 @@ const ProfileScreen2 = (props) => {
                 </OverlayTrigger>
 
                 <OverlayTrigger
-                  placement="right"
+                  placement="bottom"
                   overlay={
-                    <Tooltip id={`tooltip-right`}>
+                    <Tooltip id={`tooltip-bottom`}>
                       {reminder ? 'Turn off reminder.' : 'Turn on reminder.'}
                     </Tooltip>
                   }
@@ -208,6 +212,22 @@ const ProfileScreen2 = (props) => {
                           : 'far fa-bell fa-lg'
                       }
                     ></i>
+                  </Button>
+                </OverlayTrigger>
+
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id={`tooltip-right`}>View all coupons.</Tooltip>
+                  }
+                >
+                  <Button
+                    className="btn-sm"
+                    variant="outline-primary"
+                    style={{ margin: '0.5rem 1rem' }}
+                    onClick={handleCouponClick}
+                  >
+                    <i className="fas fa-money-check-alt fa-lg"></i>
                   </Button>
                 </OverlayTrigger>
 

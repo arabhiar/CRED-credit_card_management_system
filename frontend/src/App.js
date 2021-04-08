@@ -13,7 +13,8 @@ import CardScreen from './screens/CardScreen';
 import StatementScreen from './screens/StatementScreen';
 import SmartStatementScreen from './screens/SmartStatementScreen';
 import RadarChart from './components/RadarChart';
-import Coupon from './components/Coupon';
+import RewardScreen from './screens/RewardScreen';
+import AllCouponsScreen from './screens/AllCouponsScreen';
 
 function App() {
   return (
@@ -40,7 +41,8 @@ function App() {
             component={StatementScreen}
           />
           <Route path="/cards/:id" component={CardScreen} exact />
-          <Route path="/coupon" component={Coupon} />
+          <Route path="/rewards/coupons" component={AllCouponsScreen} exact />
+          <Route path="/rewards" component={RewardScreen} exact />
           <Route path="/credit" component={CardScreen} exact />
           <Route path="/radar" component={RadarChart} />
           <Route path="/" component={HomeScreen} exact />

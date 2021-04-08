@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
@@ -13,14 +13,23 @@ import SearchBox from '../SearchBox';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../actions/userActions';
+import { getRewardPoints } from '../../actions/rewardActions';
 
 const Header = () => {
+  const dispatch = useDispatch();
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const [coins, setCoins] = useState(135);
+  const rewardPoints = useSelector((state) => state.rewardPoints);
+  const { coins } = rewardPoints;
 
-  const dispatch = useDispatch();
+  // const [coins, setCoins] = useState(135);
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(getRewardPoints());
+    }
+  }, [userInfo, dispatch]);
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -50,11 +59,16 @@ const Header = () => {
             <Nav className="ml-auto">
               {userInfo ? (
                 <>
-                  <LinkContainer style={{ paddingRight: '2rem' }} to="/rewards">
-                    <NavLink>
-                      <i class="fas fa-coins fa-lg"></i> {coins}
-                    </NavLink>
-                  </LinkContainer>
+                  {coins && (
+                    <LinkContainer
+                      style={{ paddingRight: '2rem' }}
+                      to="/rewards"
+                    >
+                      <NavLink>
+                        <i className="fas fa-coins fa-lg"></i> {coins}
+                      </NavLink>
+                    </LinkContainer>
+                  )}
 
                   <NavDropdown title={userInfo.email} id="username">
                     <LinkContainer to="/profile">

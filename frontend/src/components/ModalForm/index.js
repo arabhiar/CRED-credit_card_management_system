@@ -7,6 +7,7 @@ import { Formik } from 'formik';
 import './styles.scss';
 import { payAmount } from '../../actions/paymnetActions';
 import { getCardById } from '../../actions/cardActions';
+import { getRewardPoints } from '../../actions/rewardActions';
 import { PAYMENT_RESET } from '../../constants/paymentConstants';
 import AlertMessage from '../AlertMessage';
 import Loader from 'react-spinners/PuffLoader';
@@ -33,6 +34,7 @@ const ModalForm = (props) => {
   useEffect(() => {
     if (successPay) {
       dispatch({ type: PAYMENT_RESET });
+      dispatch(getRewardPoints());
       dispatch(getCardById(cardId));
     }
   }, [successPay, dispatch, cardId]);
