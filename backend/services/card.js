@@ -3,7 +3,26 @@ const encryptDecrypt = require('./encryptDecrypt');
 const calculateOutstandingAmount = require('./calculateOutstandingAmount');
 const { Op } = require('sequelize');
 
+const daysInMonth = (month, year) => {
+    const temp =  new Date(year, month + 1, 0);
+    return parseInt(temp.getDate());
+}
 
+const updateCoins = (initialCoins, amount) => {
+    const today = new Date();
+    const currentMonth = parseInt(today.getMonth());
+    const currentYear = parseInt(today.getYear());
+    const numberOfDays = daysInMonth(currentMonth, currentYear);
+    const todayDate = parseInt(today.getDate());
+
+    const daysRemaining = numberOfDays - todayDate;
+    const slope = (0.05 / numberOfDays);
+    const fraction = slope * daysRemaining;
+    const coinsEarned = parseInt(fraction * parseInt(amount));
+    const finalCoins = parseInt(initialCoins) + coinsEarned;
+    // console.log(currentYear, currentMonth, numberOfDays, todayDate, daysRemaining, slope, fraction, coinsEarned, finalCoins);
+    return finalCoins;
+}
 
 module.exports = {
     addCard: async(req, res) => { 
@@ -241,6 +260,9 @@ module.exports = {
             throw new Error(err);
         })
 
+        const coinCount = updateCoins(profileAssociated.coins, req.body.amount);
+
+
         const allProfileCardIds = await db.Profile_Card.findAll({
             where: {
                 ProfileId: profileAssociated.id
@@ -268,6 +290,12 @@ module.exports = {
             // if we get the same card number associated with the currentLoggedIn user.
             if(req.params.id === currentUserCardNumber) {
 
+                // lets update the rewardsCoin in profile
+
+                const duplicate = {...profileAssociated};
+                duplicate.coins = coinCount;
+                await profileAssociated.update(duplicate);
+
                 // now we can simply create the new transaction
                 const currentTransaction = await db.Transaction.create({
                     amount: req.body.amount,
@@ -278,7 +306,6 @@ module.exports = {
                     transactionDateTime: Date.now(),
                     CardId: profileCardId.CardId,
                     userAssociated: req.user.email,
-
                 }).catch((err) => {
                     res.statusCode = 500;
                     throw new Error(err);
