@@ -24,8 +24,9 @@ export const getRewardPoints = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get('api/coins', config);
-    dispatch({ type: REWARD_POINTS_SUCCESS, payload: data });
+    const { data } = await axios.get('api/rewards/coins', config);
+    console.log(data.coinsCount);
+    dispatch({ type: REWARD_POINTS_SUCCESS, payload: data.coinsCount });
   } catch (err) {
     dispatch({
       type: REWARD_POINTS_FAIL,
