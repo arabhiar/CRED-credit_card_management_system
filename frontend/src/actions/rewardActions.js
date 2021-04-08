@@ -24,8 +24,7 @@ export const getRewardPoints = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get('api/rewards/coins', config);
-    console.log(data.coinsCount);
+    const { data } = await axios.get('/api/rewards/coins', config);
     dispatch({ type: REWARD_POINTS_SUCCESS, payload: data.coinsCount });
   } catch (err) {
     dispatch({
@@ -52,7 +51,7 @@ export const getAllCoupons = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await axios.get('api/coins', config);
+    const { data } = await axios.get('/api/rewards', config);
     dispatch({ type: ALL_COUPONS_SUCCESS, payload: data });
   } catch (err) {
     dispatch({

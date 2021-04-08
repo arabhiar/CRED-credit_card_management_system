@@ -14,6 +14,7 @@ import StatementScreen from './screens/StatementScreen';
 import SmartStatementScreen from './screens/SmartStatementScreen';
 import RadarChart from './components/RadarChart';
 import RewardScreen from './screens/RewardScreen';
+import AllCouponsScreen from './screens/AllCouponsScreen';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             component={StatementScreen}
           />
           <Route path="/cards/:id" component={CardScreen} exact />
+          <Route path="/rewards/coupons" component={AllCouponsScreen} exact />
           <Route path="/rewards" component={RewardScreen} exact />
           <Route path="/credit" component={CardScreen} exact />
           <Route path="/radar" component={RadarChart} />

@@ -9,12 +9,16 @@ import {
   Modal,
 } from 'react-bootstrap';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import './styles.scss';
+import { getRewardPoints } from '../../actions/rewardActions';
 
 const Coupon = (props) => {
   const { reward, userCoin } = props;
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -37,9 +41,20 @@ const Coupon = (props) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
+
+    const data = {
+      couponId: reward.id.toString(),
+      companyName: reward.company,
+      description: reward.description,
+      imageUrl: reward.url,
+      coinsNeeded: reward.coin,
+    };
+
     setDisableButton(true);
-    const { data } = await axios.post('api/reward/buy', reward, config);
+    await axios.post('api/rewards', data, config);
+    dispatch(getRewardPoints());
     setDisableButton(false);
+    history.push('/rewards/coupons');
   };
 
   return (
@@ -68,7 +83,7 @@ const Coupon = (props) => {
               <Button variant="outline-info" style={{ cursor: 'auto' }}>
                 <i
                   style={{ paddingRight: '0.4rem' }}
-                  class="fas fa-coins fa-lg"
+                  className="fas fa-coins fa-lg"
                 ></i>
                 {reward.coin}
               </Button>
@@ -114,7 +129,11 @@ const Coupon = (props) => {
                 >
                   Close
                 </Button>
-                <Button onClick={handleBuyCoupon} variant="success">
+                <Button
+                  onClick={handleBuyCoupon}
+                  variant="success"
+                  disabled={disableButton}
+                >
                   Confirm
                 </Button>
               </Modal.Footer>
