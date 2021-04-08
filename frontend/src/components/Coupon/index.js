@@ -8,13 +8,19 @@ import {
   Tooltip,
   Modal,
 } from 'react-bootstrap';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 import './styles.scss';
 
 const Coupon = (props) => {
   const { reward, userCoin } = props;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const [showModal, setShowModal] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -22,6 +28,18 @@ const Coupon = (props) => {
 
   const handleShowModal = () => {
     setShowModal(true);
+  };
+
+  const handleBuyCoupon = async () => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    setDisableButton(true);
+    const { data } = await axios.post('api/reward/buy', reward, config);
+    setDisableButton(false);
   };
 
   return (
@@ -96,7 +114,9 @@ const Coupon = (props) => {
                 >
                   Close
                 </Button>
-                <Button variant="success">Confirm</Button>
+                <Button onClick={handleBuyCoupon} variant="success">
+                  Confirm
+                </Button>
               </Modal.Footer>
             </Modal>
           </Col>
