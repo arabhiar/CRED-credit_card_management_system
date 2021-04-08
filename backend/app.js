@@ -23,11 +23,13 @@ app.use(morgan('dev'));
 // importing routes
 const authRoute = require('./routes/auth');
 const cardRoute = require('./routes/card');
+const rewardRoute = require('./routes/reward');
 
 
 // Routes middlewares
 app.use('/api/user', authRoute);
 app.use('/api/cards', cardRoute);
+app.use('/api/rewards', rewardRoute);
 
 app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

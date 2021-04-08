@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
         phoneNumber: {
             allowNull: true,
             type: DataTypes.STRING,
+        },
+        coins: {
+            allowNull: false,
+            type: DataTypes.DECIMAL(10, 2),
+            defaullt: 0
         }
     });
 
