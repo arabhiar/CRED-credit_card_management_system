@@ -29,7 +29,7 @@ const ModalForm = (props) => {
   });
 
   const pay = useSelector((state) => state.pay);
-  const { receipt, success: successPay, error: errorPay, loading } = pay;
+  const { success: successPay, error: errorPay, loading } = pay;
 
   useEffect(() => {
     if (successPay) {

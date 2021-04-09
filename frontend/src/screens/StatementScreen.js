@@ -6,6 +6,7 @@ import { getCardById } from '../actions/cardActions';
 import TransactionTable from '../components/TransactionTable';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
+import AlertMessage from '../components/AlertMessage';
 
 const StatementScreen = (props) => {
   const { history, match } = props;
@@ -17,11 +18,13 @@ const StatementScreen = (props) => {
   const month = match.params.month;
   const pageNumber = match.params.pageNumber || 1;
 
+  const [show, setShow] = useState(false);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   const cardDetails = useSelector((state) => state.cardDetails);
-  const { card, error, loading } = cardDetails;
+  const { card } = cardDetails;
 
   const statementDetails = useSelector((state) => state.statementDetails);
   const {
@@ -42,13 +45,10 @@ const StatementScreen = (props) => {
         dispatch(
           getStatementsByMonth(card.cardNumber, year, month, pageNumber)
         );
+        setShow(true);
       }
     }
   }, [history, userInfo, card, cardId, dispatch, year, month, pageNumber]);
-
-  // const paginate = (pageNumber) => {
-  //   setCurrentPage(pageNumber);
-  // };
 
   const utils = {
     cardId,
@@ -56,9 +56,18 @@ const StatementScreen = (props) => {
     month,
   };
 
+  const onCloseHandler = () => {
+    setShow(false);
+  };
+
   return (
     <>
       <h2 style={{ marginTop: '1.5rem' }}>Statements</h2>
+      {show && errorStatements && (
+        <AlertMessage variant="danger" onCloseHandler={onCloseHandler}>
+          {errorStatements}
+        </AlertMessage>
+      )}
       {loadingStatements ? (
         <Loader color={'#333940'} />
       ) : (

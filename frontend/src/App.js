@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
 import './App.scss';
@@ -12,7 +12,6 @@ import ProfileScreen2 from './screens/ProfileScreen2';
 import CardScreen from './screens/CardScreen';
 import StatementScreen from './screens/StatementScreen';
 import SmartStatementScreen from './screens/SmartStatementScreen';
-import RadarChart from './components/RadarChart';
 import RewardScreen from './screens/RewardScreen';
 import AllCouponsScreen from './screens/AllCouponsScreen';
 
@@ -44,7 +43,6 @@ function App() {
           <Route path="/rewards/coupons" component={AllCouponsScreen} exact />
           <Route path="/rewards" component={RewardScreen} exact />
           <Route path="/credit" component={CardScreen} exact />
-          <Route path="/radar" component={RadarChart} />
           <Route path="/" component={HomeScreen} exact />
         </Container>
       </main>

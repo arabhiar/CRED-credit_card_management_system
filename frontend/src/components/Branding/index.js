@@ -32,7 +32,7 @@ const Branding = () => {
                 </h1>
                 <p>exclusive rewards for paying your bills</p>
               </div>
-              <a href="/">more</a>
+              {/* <a href="/">more</a> */}
               <div className="ico-card">
                 <i className="fas fa-rupee-sign"></i>
               </div>
@@ -48,7 +48,7 @@ const Branding = () => {
                 </h1>
                 <p>so that you don’t have to.</p>
               </div>
-              <a href="/">more</a>
+              {/* <a href="/">more</a> */}
               <div className="ico-card">
                 <i className="fas fa-shield-alt"></i>
               </div>
@@ -63,7 +63,7 @@ const Branding = () => {
                 </h1>
                 <p>and leave everything upon us.</p>
               </div>
-              <a href="/">more</a>
+              {/* <a href="/">more</a> */}
               <div className="ico-card">
                 <i className="far fa-credit-card"></i>
               </div>

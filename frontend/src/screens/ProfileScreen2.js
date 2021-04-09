@@ -57,6 +57,7 @@ const ProfileScreen2 = (props) => {
   const [showAuthCode, setShowAuthCode] = useState(false);
   const [reminder, setReminder] = useState(false);
   const [disableReminder, setDisableReminder] = useState(false);
+  const [show, setShow] = useState(false);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -83,7 +84,7 @@ const ProfileScreen2 = (props) => {
           setReadOnly(true);
         }
         dispatch(getUserDetails('profile'));
-        // dispatch(listCards());
+        setShow(true);
         setCardAlert(true);
       } else {
         initialValues.name = user.name;
@@ -136,11 +137,20 @@ const ProfileScreen2 = (props) => {
   };
 
   const handleCouponClick = () => {
-    history.push('/rewards/coupons')
-  }
+    history.push('/rewards/coupons');
+  };
+
+  const onCloseHandler = () => {
+    setShow(false);
+  };
 
   return (
     <>
+      {show && error && (
+        <AlertMessage variant="danger" onCloseHandler={onCloseHandler}>
+          {error}
+        </AlertMessage>
+      )}
       <Row>
         <Col md={5}>
           <div className="text-center">

@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Image, Row } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { ListGroup } from 'react-bootstrap';
 
 import { getAllCoupons, getRewardPoints } from '../actions/rewardActions';
 import Loader from '../components/Loader';
+import AlertMessage from '../components/AlertMessage';
 
 const AllCouponsScreen = (props) => {
   const { history } = props;
   const dispatch = useDispatch();
+
+  const [show, setShow] = useState(false);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -20,13 +23,23 @@ const AllCouponsScreen = (props) => {
     if (!userInfo) {
       history.push('/login');
     } else {
-      //   dispatch(getRewardPoints());
+      dispatch(getRewardPoints());
       dispatch(getAllCoupons());
+      setShow(true);
     }
   }, [dispatch, userInfo, history]);
 
+  const onCloseHandler = () => {
+    setShow(false);
+  };
+
   return (
     <>
+      {show && error && (
+        <AlertMessage variant="danger" onCloseHandler={onCloseHandler}>
+          {error}
+        </AlertMessage>
+      )}
       {loading ? (
         <Loader color={'#333940'} />
       ) : coupons.length === 0 ? (

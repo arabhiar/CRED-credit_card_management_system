@@ -9,6 +9,7 @@ import { getCardById } from '../actions/cardActions';
 import Loader from '../components/Loader';
 import { Row, Col } from 'react-bootstrap';
 import { SMART_STATEMENT_BY_MONTH_RESET } from '../constants/statementConstants';
+import AlertMessage from '../components/AlertMessage';
 
 const getRandomColor = (count) => {
   const transBackground = '0.2';
@@ -38,6 +39,7 @@ const SmartStatementScreen = (props) => {
   const [vendorPie, setVendorPie] = useState(true);
   const [categoryCountPie, setCategoryCountPie] = useState(true);
   const [vendorCountPie, setVendorCountPie] = useState(true);
+  const [show, setShow] = useState(false);
 
   const colorCategory = useRef();
   const colorVendor = useRef();
@@ -72,12 +74,17 @@ const SmartStatementScreen = (props) => {
         dispatch(getCardById(cardId));
       } else {
         dispatch(getSmartStatementsByMonth(card.cardNumber, year, month));
+        setShow(true);
       }
     }
     return () => {
       dispatch({ type: SMART_STATEMENT_BY_MONTH_RESET });
     };
   }, [userInfo, history, card, dispatch, year, month, cardId]);
+
+  const onCloseHandler = () => {
+    setShow(false);
+  };
 
   return (
     <>
@@ -87,6 +94,11 @@ const SmartStatementScreen = (props) => {
       >
         Smart Statements
       </h2>
+      {show && error && (
+        <AlertMessage variant="danger" onCloseHandler={onCloseHandler}>
+          {error}
+        </AlertMessage>
+      )}
       {loading || !stat ? (
         <Loader color={'#333940'} />
       ) : (
