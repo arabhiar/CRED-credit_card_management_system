@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios from '../axios';
+
 import {
   PAYMENT_FAIL,
   PAYMENT_REQUEST,

@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios from '../axios';
+
 import {
   SMART_STATEMENT_BY_MONTH_FAIL,
   SMART_STATEMENT_BY_MONTH_REQUEST,

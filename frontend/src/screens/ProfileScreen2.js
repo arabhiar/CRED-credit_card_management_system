@@ -13,7 +13,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import axios from 'axios';
+import axios from '../axios';
 
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { listCards } from '../actions/cardActions';
