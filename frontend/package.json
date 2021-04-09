@@ -1,6 +1,5 @@
 {
   "name": "ftontend",
-  "proxy": "http://127.0.0.1:5000",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -11,6 +10,7 @@
     "axios": "^0.21.1",
     "chart.js": "^2.9.4",
     "deep-email-validator": "^0.1.18",
+    "dotenv": "^8.2.0",
     "formik": "^2.2.6",
     "jquery": "^3.6.0",
     "node-sass": "^5.0.0",

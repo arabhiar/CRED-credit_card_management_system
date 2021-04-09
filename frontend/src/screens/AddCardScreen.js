@@ -61,6 +61,7 @@ const AddCardScreen = (props) => {
     cardCvv: useRef(),
   };
 
+  // eslint-disable-next-line
   let focusFormFieldByKey = useCallback((key) => {
     formFieldsRefObj[key].current.focus();
   });
@@ -98,7 +99,7 @@ const AddCardScreen = (props) => {
       cardNumber: removeSpaces(state.cardNumber),
       expiryMonth: parseInt(state.cardMonth),
       expiryYear: parseInt(state.cardYear),
-      cvv: parseInt(state.cardCvv)
+      cvv: parseInt(state.cardCvv),
     };
     if (authCode) {
       data.authCode = authCode;

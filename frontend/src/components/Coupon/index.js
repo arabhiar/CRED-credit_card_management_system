@@ -8,7 +8,7 @@ import {
   Tooltip,
   Modal,
 } from 'react-bootstrap';
-import axios from 'axios';
+import axios from '../../axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 

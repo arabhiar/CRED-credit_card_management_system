@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Row, Col, Button, Card, Form } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Button, Card } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,7 +11,6 @@ import CreditCard2 from '../components/CreditCard2';
 import ModalForm from '../components/ModalForm';
 import Dropdown from '../components/Dropdown';
 import TransactionTable from '../components/TransactionTable';
-import { CARD_DETAILS_RESET } from '../constants/cardConstants';
 
 const getMonthsArr = (year) => {
   let d = new Date();
