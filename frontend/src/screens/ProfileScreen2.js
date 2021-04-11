@@ -37,6 +37,7 @@ const validationSchema = yup.object().shape({
   email: yup.string().required("Email can't be empty"),
   phoneNumber: yup
     .string()
+    .nullable(true)
     .matches(phoneRegex, 'Phone no. must be of length 10'),
 });
 
