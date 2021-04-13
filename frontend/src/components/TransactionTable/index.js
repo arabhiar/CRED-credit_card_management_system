@@ -38,7 +38,7 @@ const TransactionTable = (props) => {
     <div className="transaction-table">
       {transactions.length === 0 ? (
         <p style={{ fontSize: '1.0rem', fontWeight: '400', marginTop: '2rem' }}>
-          No transactions are done in this month
+          No transactions found
         </p>
       ) : (
         <Table
