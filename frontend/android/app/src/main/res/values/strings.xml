@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">CRED</string>
+    <string name="title_activity_main">CRED</string>
+    <string name="package_name">io.ionic.cred</string>
+    <string name="custom_url_scheme">io.ionic.cred</string>
+</resources>

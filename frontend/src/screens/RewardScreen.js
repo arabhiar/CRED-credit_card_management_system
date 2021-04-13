@@ -27,7 +27,7 @@ const RewardScreen = (props) => {
 
   return (
     <>
-      <h2>All Coupons</h2>
+      <h2>Buy Coupons</h2>
       {loading ? (
         <Loader color={'#333940'} />
       ) : (

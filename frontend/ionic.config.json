@@ -1,0 +1,7 @@
+{
+    "name": "CRED",
+    "integrations": {
+      "capacitor": {}
+    },
+    "type": "react"
+  }

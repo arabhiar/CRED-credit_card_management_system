@@ -1,0 +1,8 @@
+{
+    "appId": "io.ionic.cred",
+    "appName": "CRED",
+    "bundledWebRuntime": false,
+    "npmClient": "npm",
+    "webDir": "build",
+    "cordova": {}
+  }

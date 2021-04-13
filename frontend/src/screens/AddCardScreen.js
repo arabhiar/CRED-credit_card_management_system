@@ -38,7 +38,7 @@ const AddCardScreen = (props) => {
       history.push('/profile');
     } else {
       if (!userInfo) {
-        history.push('/');
+        history.push('/login');
       }
     }
   }, [userInfo, history, success, dispatch]);
