@@ -77,7 +77,7 @@ Below is a demo of final project.
     },
     "test": {
       "username": "<db_user>",
-      "password": "<password>",,
+      "password": "<password>",
       "database": "cred_test",
       "host": "127.0.0.1",
       "dialect": "mysql"
