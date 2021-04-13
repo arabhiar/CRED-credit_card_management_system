@@ -1,6 +1,6 @@
 {
     "appId": "io.ionic.cred",
-    "appName": "cred",
+    "appName": "CRED",
     "bundledWebRuntime": false,
     "npmClient": "npm",
     "webDir": "build",
