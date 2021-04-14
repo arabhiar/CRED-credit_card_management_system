@@ -40,6 +40,14 @@ Below is a demo of final project.
 
 - User can login and register using email and password.
 - User can add their credit card.
+- User can update their details in Profile section.
+- Same card can be added by two or more users(need authorization to do so).
+- User can pay bill to decrease the outstanding amount.
+- User can take a look at all the statements for a specific month of a year.
+- User will get a graphical analysis of the spendings for every month.
+- User will get reminders on email and phone for last 5 days of every month(he/she has an option to disable reminders).
+- User will get reward points for timely paying credit card dues.
+- User can use the reward points to buy coupons for companies like Amazon, Flipkart, Myntra, etc.
 
 ---
 
